@@ -1,12 +1,16 @@
 // Контракт между API, панелью и плеером. Цены — в минимальных единицах валюты (копейки, центы).
 
 export type Region = 'ru' | 'eu';
-export type Locale = 'ru' | 'en';
-export type Currency = 'RUB' | 'EUR';
+/** Язык меню на экранах и форматирования цен. Интерфейс панели переведён на ru и en; для tr панель показывается по-английски. */
+export type Locale = 'ru' | 'en' | 'tr';
+export type Currency = 'RUB' | 'EUR' | 'TRY';
 export type Role = 'owner' | 'admin' | 'editor' | 'viewer';
 export type BusinessType = 'coffee' | 'restaurant' | 'cafe' | 'bar' | 'hookah';
 
-export const TEMPLATE_IDS = ['noir', 'crema', 'neon'] as const;
+export const TEMPLATE_IDS = ['noir', 'crema', 'neon', 'newyear', 'winter'] as const;
+
+/** Снежные шаблоны с общей вёрсткой: новогодний (гирлянда, шары) и зимний (сосульки, иней). */
+export const SNOW_TEMPLATES: readonly TemplateId[] = ['newyear', 'winter'];
 export type TemplateId = (typeof TEMPLATE_IDS)[number];
 
 export const BADGES = ['new', 'hit', 'vegan', 'spicy', 'promo'] as const;
@@ -127,12 +131,13 @@ export const DEFAULT_SCENE_SETTINGS: SceneSettings = {
   footerNote: '',
 };
 
-export const TEMPLATE_INFO: Record<TemplateId, { name: string; description: { ru: string; en: string }; suits: BusinessType[] }> = {
+export const TEMPLATE_INFO: Record<TemplateId, { name: string; description: Record<Locale, string>; suits: BusinessType[] }> = {
   noir: {
     name: 'Noir',
     description: {
       ru: 'Тёмный, антиква и золото. Рестораны, бары, кальянные.',
       en: 'Dark, serif and gold. Restaurants, bars, lounges.',
+      tr: 'Koyu zemin, serif ve altın. Restoran, bar, nargile.',
     },
     suits: ['restaurant', 'bar', 'hookah'],
   },
@@ -141,6 +146,7 @@ export const TEMPLATE_INFO: Record<TemplateId, { name: string; description: { ru
     description: {
       ru: 'Тёплый светлый, колонки размеров. Кофейни и кафе.',
       en: 'Warm and light with size columns. Coffee shops and cafés.',
+      tr: 'Sıcak ve açık, boy sütunlu. Kahve dükkânı ve kafe.',
     },
     suits: ['coffee', 'cafe'],
   },
@@ -149,7 +155,26 @@ export const TEMPLATE_INFO: Record<TemplateId, { name: string; description: { ru
     description: {
       ru: 'Крупный гротеск и видео-фон. Бары и лаунжи.',
       en: 'Bold grotesque over video. Bars and lounges.',
+      tr: 'İri grotesk ve video arka plan. Bar ve lounge.',
     },
     suits: ['bar', 'hookah', 'cafe'],
+  },
+  newyear: {
+    name: 'New Year',
+    description: {
+      ru: 'Новогодний: снегопад, гирлянда, золото на хвойном. Сезонное меню.',
+      en: 'Festive: falling snow, string lights, gold on evergreen. Seasonal menus.',
+      tr: 'Yılbaşı: kar yağışı, ışık zinciri, yeşil üstüne altın. Sezon menüsü.',
+    },
+    suits: ['coffee', 'cafe', 'restaurant', 'bar'],
+  },
+  winter: {
+    name: 'Winter',
+    description: {
+      ru: 'Зимний: снегопад, сосульки и иней на морозно-синем. Сезонное меню без праздника.',
+      en: 'Wintry: falling snow, icicles and frost on icy blue. Seasonal, not festive.',
+      tr: 'Kış: kar yağışı, buz sarkıtları ve kırağı, buz mavisi zemin. Sezon menüsü.',
+    },
+    suits: ['coffee', 'cafe', 'restaurant', 'bar'],
   },
 };

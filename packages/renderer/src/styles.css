@@ -702,6 +702,473 @@
   color: var(--muted);
 }
 
+/* ===================== Снежные шаблоны: новогодний и зимний ===================== */
+/* newyear — золото на хвойном, гирлянда и шары; winter — морозно-синий, сосульки, иней и сугроб.
+   Вёрстка общая (.dm-snowy), разные только цвета. Снег и оформление строит decor.ts; здесь — вид и анимации. */
+
+.dm-snowy {
+  --fg: #fbf6ea;
+  --accent: #ecc66f;
+  --accent-rgb: 236, 198, 111;
+  --berry: #e0524f;
+  --berry-rgb: 224, 82, 79;
+  --price: #fff2d2;
+  --subtitle: #eadbb6;
+  --title-text: linear-gradient(180deg, #fff6d9 0%, #f0cd78 52%, #c39237 100%);
+  --star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.8 6.4 5.6 11.2 12 12-6.4.8-11.2 5.6-12 12-.8-6.4-5.6-11.2-12-12C6.4 11.2 11.2 6.4 12 0z'/%3E%3C/svg%3E");
+  --flake: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M12 1.5v21M2.9 6.75l18.2 10.5M2.9 17.25l18.2-10.5M12 1.5 9.6 3.9M12 1.5l2.4 2.4M12 22.5l-2.4-2.4M12 22.5l2.4-2.4M2.9 6.75l3.3.9M2.9 6.75l.9-3.3M21.1 17.25l-3.3-.9M21.1 17.25l-.9 3.3M2.9 17.25l.9 3.3M2.9 17.25l3.3-.9M21.1 6.75l-.9-3.3M21.1 6.75l-3.3.9'/%3E%3C/svg%3E");
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Manrope', Arial, sans-serif;
+  --pad-x: 92px;
+  --col-gap: 52px;
+  --cat-gap: 28px;
+  --cell-w: 90px;
+  /* Сверху висит гирлянда — опускаем заголовок под неё. */
+  padding-top: 116px;
+}
+.dm-snowy {
+  --bg: #0b2a21;
+  --muted: #b9cabe;
+  --panel: rgba(5, 24, 17, 0.66);
+  --shade: rgba(2, 12, 8, 0.85);
+  --dim: #04150e;
+  --on-accent: #0b2a21;
+  --glow-left: rgba(224, 82, 79, 0.24);
+  --glow-right: rgba(var(--accent-rgb), 0.18);
+}
+.dm-tpl-winter {
+  --bg: #0b2240;
+  --muted: #b3c7dd;
+  --accent: #cfe7ff;
+  --accent-rgb: 207, 231, 255;
+  --berry: #ff9a8f;
+  --price: #ffffff;
+  --subtitle: #d5e6f8;
+  --title-text: linear-gradient(180deg, #ffffff 0%, #e2f1ff 48%, #9fc8ee 100%);
+  --panel: rgba(5, 16, 34, 0.64);
+  --shade: rgba(3, 9, 22, 0.85);
+  --dim: #050f22;
+  --on-accent: #0b2240;
+  --glow-left: rgba(120, 175, 255, 0.24);
+  --glow-right: rgba(190, 225, 255, 0.14);
+}
+/* Иней по углам, как на замёрзшем окне. */
+.dm-snowy.dm-tpl-winter .dm-deco {
+  background: radial-gradient(circle at 0 0, rgba(225, 242, 255, 0.2) 0%, rgba(225, 242, 255, 0) 26%),
+    radial-gradient(circle at 100% 0, rgba(225, 242, 255, 0.18) 0%, rgba(225, 242, 255, 0) 24%),
+    radial-gradient(ellipse at 50% -18%, rgba(var(--accent-rgb), 0.18) 0%, rgba(var(--accent-rgb), 0) 52%),
+    radial-gradient(ellipse at 50% 125%, var(--shade) 0%, transparent 62%);
+}
+
+.dm-snowy .dm-deco {
+  background: radial-gradient(ellipse at 50% -18%, rgba(var(--accent-rgb), 0.22) 0%, rgba(var(--accent-rgb), 0) 52%),
+    radial-gradient(ellipse at 50% 125%, var(--shade) 0%, transparent 62%);
+}
+.dm-snowy .dm-deco::before,
+.dm-snowy .dm-deco::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  animation: dm-float 20s ease-in-out infinite alternate;
+}
+.dm-snowy .dm-deco::before {
+  left: -220px;
+  bottom: -260px;
+  width: 760px;
+  height: 760px;
+  background: radial-gradient(circle, var(--glow-left) 0%, transparent 64%);
+}
+.dm-snowy .dm-deco::after {
+  right: -200px;
+  bottom: -240px;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, var(--glow-right) 0%, transparent 64%);
+  animation-duration: 26s;
+  animation-direction: alternate-reverse;
+}
+.dm-snowy .dm-bg-dim {
+  background: var(--dim);
+}
+
+/* Снег: размер плитки в ключевых кадрах совпадает с SNOW в decor.ts. */
+.dm-snow,
+.dm-sparkles {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.dm-snow-sway {
+  position: absolute;
+  left: -40px;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  padding-right: 80px;
+  box-sizing: content-box;
+  animation: dm-sway 7s ease-in-out infinite alternate;
+}
+.dm-snow-fall {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background-repeat: repeat;
+  will-change: transform;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.dm-snow--far {
+  animation-name: dm-snow-far;
+}
+.dm-snow--mid {
+  animation-name: dm-snow-mid;
+}
+.dm-snow--near {
+  animation-name: dm-snow-near;
+}
+
+/* Гирлянда */
+.dm-garland {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 90px;
+  z-index: 2;
+  pointer-events: none;
+}
+.dm-garland-wire {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+.dm-garland-wire path {
+  fill: none;
+  stroke: #020c08;
+  stroke-opacity: 0.9;
+  stroke-width: 3;
+}
+.dm-bulb {
+  position: absolute;
+  width: 14px;
+  height: 21px;
+  -webkit-transform-origin: 7px 0;
+  transform-origin: 7px 0;
+}
+.dm-bulb::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0;
+  width: 8px;
+  height: 6px;
+  border-radius: 2px;
+  background: #22312a;
+}
+.dm-bulb::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 14px;
+  height: 16px;
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  background: var(--bulb);
+  box-shadow: 0 0 8px 2px var(--glow), 0 0 26px 8px var(--glow);
+  animation: dm-twinkle 2s ease-in-out infinite alternate;
+  animation-duration: inherit;
+  animation-delay: inherit;
+}
+.dm-bulb--c0 {
+  --bulb: #ffd970;
+  --glow: rgba(255, 205, 90, 0.55);
+}
+.dm-bulb--c1 {
+  --bulb: #ff6a5e;
+  --glow: rgba(255, 90, 80, 0.55);
+}
+.dm-bulb--c2 {
+  --bulb: #6fe8a8;
+  --glow: rgba(90, 230, 160, 0.5);
+}
+.dm-bulb--c3 {
+  --bulb: #fff3d8;
+  --glow: rgba(255, 240, 210, 0.55);
+}
+
+/* Ёлочные шары */
+.dm-bauble {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  margin-left: -1px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(rgba(var(--accent-rgb), 0.15), rgba(var(--accent-rgb), 0.85));
+  -webkit-transform-origin: 50% 0;
+  transform-origin: 50% 0;
+  animation: dm-swing 6s ease-in-out infinite alternate;
+}
+.dm-bauble-ball {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 46px;
+  height: 46px;
+  margin: 6px 0 0 -23px;
+  border-radius: 50%;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
+}
+.dm-bauble-ball::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: -7px;
+  width: 14px;
+  height: 9px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #9c7a3c, #f1d58f 50%, #9c7a3c);
+}
+.dm-bauble--red .dm-bauble-ball {
+  background: radial-gradient(circle at 34% 30%, #ffc2b8 0, #e0524f 26%, #9b2028 70%, #5a0c14 100%);
+}
+.dm-bauble--gold .dm-bauble-ball {
+  background: radial-gradient(circle at 34% 30%, #fff6d6 0, #ecc66f 28%, #a87a2c 72%, #5e3f10 100%);
+}
+
+/* Блёстки */
+.dm-sparkle {
+  position: absolute;
+  opacity: 0;
+  background: var(--sparkle, #ffe6a1);
+  -webkit-mask: var(--star) center / contain no-repeat;
+  mask: var(--star) center / contain no-repeat;
+  animation: dm-sparkle 4s ease-in-out infinite;
+}
+
+/* Сосульки, сугроб и блики зимнего шаблона */
+.dm-icicles {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+.dm-icicles-svg,
+.dm-drift-svg {
+  position: absolute;
+  left: 0;
+  overflow: visible;
+}
+.dm-icicles-svg {
+  top: 0;
+}
+.dm-drift {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 120px;
+  z-index: 0;
+  pointer-events: none;
+}
+.dm-drift-svg {
+  bottom: 0;
+}
+.dm-glint {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  opacity: 0;
+  background: #fff;
+  -webkit-mask: var(--star) center / contain no-repeat;
+  mask: var(--star) center / contain no-repeat;
+  animation: dm-sparkle 4s ease-in-out infinite;
+}
+
+/* Заголовок */
+.dm-snowy .dm-head {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.dm-snowy .dm-title {
+  display: inline-block;
+  padding: 0 14px 6px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 88px;
+  line-height: 1.02;
+  background: var(--title-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dm-snowy .dm-rule {
+  position: relative;
+  width: 440px;
+  height: 1px;
+  margin: 18px auto 0;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--accent-rgb), 0) 0%,
+    var(--accent) 34%,
+    rgba(var(--accent-rgb), 0) 45%,
+    rgba(var(--accent-rgb), 0) 55%,
+    var(--accent) 66%,
+    rgba(var(--accent-rgb), 0) 100%
+  );
+}
+.dm-snowy .dm-rule::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -11px;
+  width: 22px;
+  height: 22px;
+  margin-left: -11px;
+  background: var(--accent);
+  -webkit-mask: var(--star) center / contain no-repeat;
+  mask: var(--star) center / contain no-repeat;
+}
+.dm-snowy .dm-subtitle {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--subtitle);
+}
+
+/* Категории — тёмные «стёкла», чтобы снег не мешал читать цены. */
+.dm-snowy .dm-cat {
+  padding: 24px 30px 6px;
+  border-radius: 24px;
+  background: var(--panel);
+  border: 1px solid rgba(var(--accent-rgb), 0.28);
+}
+.dm-snowy .dm-cat-head {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed rgba(var(--accent-rgb), 0.32);
+}
+.dm-snowy .dm-cat-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1.08;
+  color: var(--accent);
+}
+.dm-snowy .dm-cat-name::before {
+  content: '';
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin-right: 14px;
+  vertical-align: middle;
+  position: relative;
+  top: -4px;
+  background: var(--accent);
+  -webkit-mask: var(--flake) center / contain no-repeat;
+  mask: var(--flake) center / contain no-repeat;
+}
+.dm-snowy .dm-cat-labels {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  padding-bottom: 6px;
+}
+.dm-snowy .dm-item {
+  margin-bottom: 13px;
+}
+.dm-snowy .dm-item.has-img {
+  margin-bottom: 16px;
+}
+/* Фото целиком, без кружка: вырезанная тарелка «лежит» на панели, обычное фото — со скруглёнными углами. */
+.dm-snowy .dm-item-img {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+  border-radius: 14px;
+  margin-right: 18px;
+}
+.dm-snowy .dm-item-name {
+  font-size: 26px;
+  font-weight: 600;
+}
+.dm-snowy .dm-leader {
+  margin: 0 12px;
+  border-bottom: 2px dotted rgba(var(--accent-rgb), 0.3);
+  position: relative;
+  top: -7px;
+}
+.dm-snowy .dm-item-price,
+.dm-snowy .dm-item-prices {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--price);
+}
+/* Колонки размеров: три цены в ряд должны оставлять место названию. */
+.dm-snowy .dm-item-prices {
+  font-size: 27px;
+}
+.dm-snowy .dm-item-sub {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 21px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.dm-snowy .dm-item-desc {
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.dm-snowy .dm-badge {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--berry);
+  padding: 5px 11px 4px;
+  border-radius: 999px;
+}
+.dm-snowy .dm-badge--new {
+  color: var(--on-accent);
+  background: var(--accent);
+}
+.dm-snowy .dm-badge--hit {
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent);
+  padding: 4px 10px 3px;
+}
+.dm-snowy .dm-badge--vegan {
+  background: #3d8c5c;
+}
+.dm-snowy .dm-soldout {
+  color: var(--berry);
+}
+.dm-snowy .dm-foot {
+  color: var(--muted);
+}
+.dm-snowy .dm-dots {
+  color: var(--accent);
+}
+
 /* ===================== Перечень табака (15-ФЗ) ===================== */
 /* Одинаковый размер букв, чёрное на белом, без изображений — поверх любого шаблона. */
 
@@ -835,5 +1302,64 @@
   }
   to {
     transform: translate(-200px, -140px);
+  }
+}
+@keyframes dm-snow-far {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 300px, 0);
+  }
+}
+@keyframes dm-snow-mid {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 420px, 0);
+  }
+}
+@keyframes dm-snow-near {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 620px, 0);
+  }
+}
+@keyframes dm-sway {
+  from {
+    transform: translateX(-22px);
+  }
+  to {
+    transform: translateX(22px);
+  }
+}
+@keyframes dm-twinkle {
+  0% {
+    opacity: 0.32;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes dm-swing {
+  from {
+    transform: rotate(-5deg);
+  }
+  to {
+    transform: rotate(5deg);
+  }
+}
+@keyframes dm-sparkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1) rotate(45deg);
   }
 }

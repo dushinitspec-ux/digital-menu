@@ -158,6 +158,9 @@ const ru = {
   settings: 'Настройки',
   orgName: 'Название организации',
   language: 'Язык панели',
+  screenLanguage: 'Язык меню на экранах',
+  screenLanguageHint: 'Подписи на ТВ («Нет в наличии», метки) и формат цен',
+  currency: 'Валюта',
   region: 'Регион данных',
   region_ru: 'Россия (серверы в РФ)',
   region_eu: 'Европа (серверы в ЕС)',
@@ -324,6 +327,9 @@ const en: Dict = {
   settings: 'Settings',
   orgName: 'Organisation name',
   language: 'Dashboard language',
+  screenLanguage: 'Menu language on screens',
+  screenLanguageHint: 'Labels on the TV (“Sold out”, badges) and price format',
+  currency: 'Currency',
   region: 'Data region',
   region_ru: 'Russia (servers in Russia)',
   region_eu: 'Europe (servers in the EU)',
@@ -332,7 +338,8 @@ const en: Dict = {
   days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
 };
 
-export const DICTS: Record<Locale, Dict> = { ru, en };
+// Панель переведена на русский и английский; при турецком языке аккаунта она показывается по-английски.
+export const DICTS: Record<Locale, Dict> = { ru, en, tr: en };
 export type TKey = Exclude<keyof Dict, 'days'>;
 
 export const LocaleContext = createContext<{ locale: Locale; setLocale: (l: Locale) => void }>({

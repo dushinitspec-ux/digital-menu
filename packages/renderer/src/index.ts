@@ -1,8 +1,10 @@
 import './fonts';
 import './styles.css';
 import {
+  currencyBeforeAmount,
   currencySymbol,
   formatAmount,
+  SNOW_TEMPLATES,
   type Badge,
   type CategoryView,
   type Currency,
@@ -12,6 +14,10 @@ import {
   type SceneView,
   type TemplateId,
 } from '@dm/shared';
+import { templateDecor } from './decor';
+import { h } from './dom';
+
+export { templateDecor } from './decor';
 
 export interface RenderContext {
   currency: Currency;
@@ -41,24 +47,15 @@ const DEFAULT_COLUMNS: Record<TemplateId, Record<Orientation, number>> = {
   noir: { landscape: 3, portrait: 1 },
   crema: { landscape: 3, portrait: 2 },
   neon: { landscape: 2, portrait: 1 },
+  newyear: { landscape: 3, portrait: 1 },
+  winter: { landscape: 3, portrait: 1 },
 };
 
 const LABELS: Record<Locale, Record<Badge | 'soldOut' | 'empty', string>> = {
   ru: { soldOut: 'Нет в наличии', new: 'Новинка', hit: 'Хит', vegan: 'Веган', spicy: 'Острое', promo: 'Акция', empty: 'Меню скоро появится' },
   en: { soldOut: 'Sold out', new: 'New', hit: 'Bestseller', vegan: 'Vegan', spicy: 'Spicy', promo: 'Offer', empty: 'Menu coming soon' },
+  tr: { soldOut: 'Tükendi', new: 'Yeni', hit: 'Favori', vegan: 'Vegan', spicy: 'Acı', promo: 'Kampanya', empty: 'Menü yakında' },
 };
-
-type Child = Node | string | null | undefined | false;
-
-function h(tag: string, className?: string, children: Child[] = []): HTMLElement {
-  const el = document.createElement(tag);
-  if (className) el.className = className;
-  for (const c of children) {
-    if (c === null || c === undefined || c === false) continue;
-    el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
-  }
-  return el;
-}
 
 function px(value: string): number {
   const n = parseFloat(value);
@@ -74,6 +71,9 @@ function fontsReady(): Promise<unknown> {
   const fonts = (document as Document & { fonts?: { ready: Promise<unknown> } }).fonts;
   return fonts ? Promise.race([fonts.ready, new Promise((r) => setTimeout(r, 2500))]) : Promise.resolve();
 }
+
+/** Меньше стольких строк категория в колонке не разрывается. */
+const MIN_SPLIT = 3;
 
 interface Segment {
   category: CategoryView;
@@ -122,10 +122,11 @@ export function createRenderer(container: HTMLElement, options: RendererOptions 
   function money(minor: number, ctx: RenderContext, plain: boolean): HTMLElement {
     const amount = formatAmount(minor, ctx.locale);
     const sym = currencySymbol(ctx.currency);
-    if (plain) return h('span', 'dm-money', [ctx.currency === 'EUR' && ctx.locale === 'en' ? `${sym}${amount}` : `${amount} ${sym}`]);
+    const before = currencyBeforeAmount(ctx.currency, ctx.locale);
+    if (plain) return h('span', 'dm-money', [before ? `${sym}${amount}` : `${amount} ${sym}`]);
     const amt = h('span', 'dm-amt', [amount]);
     const cur = h('span', 'dm-cur', [sym]);
-    return ctx.currency === 'EUR' && ctx.locale === 'en' ? h('span', 'dm-money', [cur, amt]) : h('span', 'dm-money', [amt, cur]);
+    return before ? h('span', 'dm-money', [cur, amt]) : h('span', 'dm-money', [amt, cur]);
   }
 
   function priceKey(item: ItemView) {
@@ -262,19 +263,27 @@ export function createRenderer(container: HTMLElement, options: RendererOptions 
         let i = 0;
         let continued = false;
         while (i < items.length) {
-          const gap = column().length > 0 ? m.gap : 0;
-          if (gap + m.chrome + m.head + m.items[i]! > remaining && column().length > 0) {
+          const fresh = column().length === 0;
+          const head = (fresh ? 0 : m.gap) + m.chrome + m.head;
+          let used = head;
+          let n = 0;
+          while (i + n < items.length && (n === 0 || used + m.items[i + n]! <= remaining)) {
+            used += m.items[i + n]!;
+            n++;
+          }
+          const left = items.length - i - n;
+          // Не оставляем в конце колонки огрызок категории из одной-двух строк — начинаем её в следующей.
+          if (!fresh && (used > remaining || (left > 0 && n < MIN_SPLIT))) {
             nextColumn();
             continue;
           }
-          const segment: Segment = { category, continued, items: [] };
-          let used = (column().length > 0 ? m.gap : 0) + m.chrome + m.head;
-          while (i < items.length && (segment.items.length === 0 || used + m.items[i]! <= remaining)) {
-            used += m.items[i]!;
-            segment.items.push(items[i]!);
-            i++;
+          // И не переносим в следующую колонку одну-две строки: отдаём туда ещё несколько.
+          if (left > 0 && left < MIN_SPLIT && n - (MIN_SPLIT - left) >= MIN_SPLIT) {
+            for (let k = 0; k < MIN_SPLIT - left; k++) used -= m.items[i + n - 1 - k]!;
+            n -= MIN_SPLIT - left;
           }
-          column().push(segment);
+          column().push({ category, continued, items: items.slice(i, i + n) });
+          i += n;
           remaining -= used;
           continued = true;
           if (i < items.length) nextColumn();
@@ -313,7 +322,8 @@ export function createRenderer(container: HTMLElement, options: RendererOptions 
   function buildScene(scene: SceneView, ctx: RenderContext, previous: typeof current) {
     const s = scene.settings;
     const sameScene = previous !== null && previous.scene.id === scene.id && previous.scene.template === scene.template;
-    const el = h('div', `dm-scene dm-tpl-${scene.template} dm-${orientation}${sameScene ? ' dm-quiet' : ' dm-enter'}`);
+    const snowy = SNOW_TEMPLATES.includes(scene.template) ? ' dm-snowy' : '';
+    const el = h('div', `dm-scene dm-tpl-${scene.template}${snowy} dm-${orientation}${sameScene ? ' dm-quiet' : ' dm-enter'}`);
     if (s.accentColor) el.style.setProperty('--accent', s.accentColor);
 
     const bgUrl = scene.background?.url ?? null;
@@ -346,6 +356,10 @@ export function createRenderer(container: HTMLElement, options: RendererOptions 
     } else {
       el.appendChild(h('div', 'dm-deco'));
     }
+    // Сезонное оформление (снег, гирлянда, сосульки) рисуется и поверх фото-фона — без него шаблон теряет смысл.
+    // При обновлении цен той же сцены переносим его целиком, чтобы снегопад не начинался заново.
+    const prevDecor = sameScene ? Array.prototype.slice.call(previous!.el.querySelectorAll('[data-decor]')) as HTMLElement[] : [];
+    for (const d of prevDecor.length ? prevDecor : templateDecor(scene.template, SIZE[orientation])) el.appendChild(d);
 
     const head = s.title || s.subtitle
       ? h('div', 'dm-head', [

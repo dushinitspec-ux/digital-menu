@@ -897,6 +897,24 @@ fieldset {
   font-family: 'Unbounded', sans-serif;
   text-transform: uppercase;
 }
+.tpl-swatch-newyear .scene-swatch,
+.tpl-card.tpl-swatch-newyear,
+.tpl-swatch-winter .scene-swatch,
+.tpl-card.tpl-swatch-winter {
+  background: radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.9) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 64% 40%, rgba(255, 255, 255, 0.7) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.8) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 40% 72%, rgba(255, 255, 255, 0.6) 0 1px, transparent 1.5px),
+    radial-gradient(ellipse at 50% -20%, rgba(236, 198, 111, 0.35), transparent 60%), #0b2a21;
+  color: #ecc66f;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+}
+.tpl-swatch-winter .scene-swatch,
+.tpl-card.tpl-swatch-winter {
+  background-color: #0b2240;
+  color: #cfe7ff;
+}
 .editor {
   display: grid;
   grid-template-columns: 1fr;

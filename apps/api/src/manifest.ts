@@ -102,7 +102,7 @@ export async function buildScenes(
   const mediaById = new Map(mediaRows.map((m) => [m.id, mediaView(storage, m)]));
   const used = new Set<string>();
 
-  const collator = new Intl.Collator(org.locale === 'ru' ? 'ru' : 'en');
+  const collator = new Intl.Collator(org.locale);
   const categoryViews = new Map<string, CategoryView>();
   for (const c of categories) {
     const tobacco = c.compliance === 'tobacco';

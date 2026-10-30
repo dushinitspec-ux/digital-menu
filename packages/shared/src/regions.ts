@@ -15,3 +15,10 @@ export const REGION_DEFAULTS: Record<Region, { currency: Currency; locale: Local
   ru: { currency: 'RUB', locale: 'ru', timezone: 'Europe/Moscow' },
   eu: { currency: 'EUR', locale: 'en', timezone: 'Europe/Berlin' },
 };
+
+/** Страны контура со своей валютой. Турция живёт в европейском контуре, но цены у неё в лирах. */
+const COUNTRY_CURRENCY: Partial<Record<string, Currency>> = { TR: 'TRY' };
+
+export function currencyForCountry(country: string): Currency {
+  return COUNTRY_CURRENCY[country.toUpperCase()] ?? REGION_DEFAULTS[regionForCountry(country)].currency;
+}
