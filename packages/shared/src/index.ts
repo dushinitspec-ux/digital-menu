@@ -3,3 +3,4 @@ export * from './schedule';
 export * from './money';
 export * from './schemas';
 export * from './regions';
+export * from './menu-file';

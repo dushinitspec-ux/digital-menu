@@ -15,6 +15,12 @@ export interface RealtimeClient {
   send(event: PlayerEvent): void;
 }
 
+/** Разовое «меню изменилось» без экземпляра Realtime — для CLI-скриптов вроде импорта меню. */
+export async function notifyOrgChanged(sql: Db, orgId: string) {
+  const message: Message = { orgId, event: { type: 'manifest' } };
+  await sql.notify(CHANNEL, JSON.stringify(message));
+}
+
 /**
  * Доставка событий экранам. Публикация идёт через PostgreSQL NOTIFY, поэтому работает при нескольких
  * экземплярах API; каждый экземпляр держит SSE-соединения своих экранов и рассылает им событие.

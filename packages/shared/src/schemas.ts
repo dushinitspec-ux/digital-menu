@@ -13,7 +13,7 @@ const name = (max = 120) => z.string().trim().min(1).max(max);
 const price = z.number().int().min(0).max(MAX_PRICE);
 
 export const businessTypeSchema = z.enum(['coffee', 'restaurant', 'cafe', 'bar', 'hookah']);
-export const localeSchema = z.enum(['ru', 'en']);
+export const localeSchema = z.enum(['ru', 'en', 'tr']);
 export const roleSchema = z.enum(['owner', 'admin', 'editor', 'viewer']);
 export const templateSchema = z.enum(TEMPLATE_IDS);
 export const orientationSchema = z.enum(['landscape', 'portrait']);

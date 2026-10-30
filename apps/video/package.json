@@ -1,0 +1,21 @@
+{
+  "name": "@dm/video",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Видеоролики меню для экранов: тот же рендерер, что на ТВ, записанный кадр за кадром в MP4",
+  "scripts": {
+    "build": "vite build",
+    "render": "vite build && node render.mjs",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@dm/renderer": "workspace:*",
+    "@dm/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5"
+  }
+}

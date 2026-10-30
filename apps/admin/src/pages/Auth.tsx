@@ -28,6 +28,7 @@ const COUNTRIES: { code: string; ru: string; en: string }[] = [
   { code: 'ME', ru: 'Черногория', en: 'Montenegro' },
   { code: 'GB', ru: 'Великобритания', en: 'United Kingdom' },
   { code: 'CH', ru: 'Швейцария', en: 'Switzerland' },
+  { code: 'TR', ru: 'Турция', en: 'Türkiye' },
 ];
 
 function AuthFrame({ title, children }: { title: string; children: React.ReactNode }) {

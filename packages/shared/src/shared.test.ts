@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { formatAmount, formatPrice, parsePrice } from './money';
-import { regionForCountry } from './regions';
+import { currencyForCountry, regionForCountry } from './regions';
 import { localTimeParts, resolveSceneId } from './schedule';
 import { claimScreenInput, itemInput, registerInput } from './schemas';
 import type { ScreenSchedule } from './types';
@@ -58,6 +58,14 @@ describe('money', () => {
     expect(formatAmount(450, 'ru')).toBe('4,50');
     expect(formatPrice(120000, 'RUB', 'ru')).toBe('1 200 ₽');
     expect(formatPrice(450, 'EUR', 'en')).toBe('€4.50');
+    expect(formatPrice(450, 'EUR', 'ru')).toBe('4,50 €');
+  });
+
+  it('formats Turkish lira the Turkish way', () => {
+    expect(formatAmount(125000, 'tr')).toBe('1.250');
+    expect(formatAmount(18550, 'tr')).toBe('185,50');
+    expect(formatPrice(18500, 'TRY', 'tr')).toBe('185 ₺');
+    expect(formatPrice(18500, 'TRY', 'en')).toBe('185 ₺');
   });
 
   it('parses human input', () => {
@@ -66,6 +74,9 @@ describe('money', () => {
     expect(parsePrice('1 200 ₽')).toBe(120000);
     expect(parsePrice('abc')).toBeNull();
     expect(parsePrice('1.234')).toBeNull();
+    expect(parsePrice('185 ₺')).toBe(18500);
+    expect(parsePrice('185 TL')).toBe(18500);
+    expect(parsePrice('185,5tl')).toBe(18550);
   });
 });
 
@@ -73,6 +84,13 @@ describe('regions and schemas', () => {
   it('routes countries to contours', () => {
     expect(regionForCountry('ru')).toBe('ru');
     expect(regionForCountry('DE')).toBe('eu');
+    expect(regionForCountry('TR')).toBe('eu');
+  });
+
+  it('picks the currency by country, not only by contour', () => {
+    expect(currencyForCountry('ru')).toBe('RUB');
+    expect(currencyForCountry('DE')).toBe('EUR');
+    expect(currencyForCountry('tr')).toBe('TRY');
   });
 
   it('normalises register input', () => {

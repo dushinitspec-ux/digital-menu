@@ -1,4 +1,4 @@
-import { loginInput, REGION_DEFAULTS, regionForCountry, registerInput } from '@dm/shared';
+import { currencyForCountry, loginInput, REGION_DEFAULTS, regionForCountry, registerInput } from '@dm/shared';
 import type { FastifyInstance } from 'fastify';
 import { createSession, requireUser, SESSION_COOKIE, setSessionCookie } from '../auth';
 import type { Ctx } from '../context';
@@ -35,7 +35,7 @@ export function registerAuthRoutes(app: FastifyInstance, { sql, config }: Ctx) {
       const [org] = await tx<{ id: string }[]>`
         insert into organizations (name, region, country, business_type, currency, locale)
         values (${input.orgName}, ${config.region}, ${input.country}, ${input.businessType},
-                ${REGION_DEFAULTS[config.region].currency}, ${input.locale})
+                ${currencyForCountry(input.country)}, ${input.locale})
         returning id`;
       await tx`insert into memberships (org_id, user_id, role) values (${org!.id}, ${user!.id}, 'owner')`;
       await tx`insert into locations (org_id, name, timezone) values (${org!.id}, ${input.orgName}, ${input.timezone})`;

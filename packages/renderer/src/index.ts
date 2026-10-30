@@ -1,6 +1,7 @@
 import './fonts';
 import './styles.css';
 import {
+  currencyBeforeAmount,
   currencySymbol,
   formatAmount,
   type Badge,
@@ -12,6 +13,10 @@ import {
   type SceneView,
   type TemplateId,
 } from '@dm/shared';
+import { templateDecor } from './decor';
+import { h } from './dom';
+
+export { templateDecor } from './decor';
 
 export interface RenderContext {
   currency: Currency;
@@ -41,24 +46,14 @@ const DEFAULT_COLUMNS: Record<TemplateId, Record<Orientation, number>> = {
   noir: { landscape: 3, portrait: 1 },
   crema: { landscape: 3, portrait: 2 },
   neon: { landscape: 2, portrait: 1 },
+  newyear: { landscape: 3, portrait: 1 },
 };
 
 const LABELS: Record<Locale, Record<Badge | 'soldOut' | 'empty', string>> = {
   ru: { soldOut: 'Нет в наличии', new: 'Новинка', hit: 'Хит', vegan: 'Веган', spicy: 'Острое', promo: 'Акция', empty: 'Меню скоро появится' },
   en: { soldOut: 'Sold out', new: 'New', hit: 'Bestseller', vegan: 'Vegan', spicy: 'Spicy', promo: 'Offer', empty: 'Menu coming soon' },
+  tr: { soldOut: 'Tükendi', new: 'Yeni', hit: 'Favori', vegan: 'Vegan', spicy: 'Acı', promo: 'Kampanya', empty: 'Menü yakında' },
 };
-
-type Child = Node | string | null | undefined | false;
-
-function h(tag: string, className?: string, children: Child[] = []): HTMLElement {
-  const el = document.createElement(tag);
-  if (className) el.className = className;
-  for (const c of children) {
-    if (c === null || c === undefined || c === false) continue;
-    el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
-  }
-  return el;
-}
 
 function px(value: string): number {
   const n = parseFloat(value);
@@ -122,10 +117,11 @@ export function createRenderer(container: HTMLElement, options: RendererOptions 
   function money(minor: number, ctx: RenderContext, plain: boolean): HTMLElement {
     const amount = formatAmount(minor, ctx.locale);
     const sym = currencySymbol(ctx.currency);
-    if (plain) return h('span', 'dm-money', [ctx.currency === 'EUR' && ctx.locale === 'en' ? `${sym}${amount}` : `${amount} ${sym}`]);
+    const before = currencyBeforeAmount(ctx.currency, ctx.locale);
+    if (plain) return h('span', 'dm-money', [before ? `${sym}${amount}` : `${amount} ${sym}`]);
     const amt = h('span', 'dm-amt', [amount]);
     const cur = h('span', 'dm-cur', [sym]);
-    return ctx.currency === 'EUR' && ctx.locale === 'en' ? h('span', 'dm-money', [cur, amt]) : h('span', 'dm-money', [amt, cur]);
+    return before ? h('span', 'dm-money', [cur, amt]) : h('span', 'dm-money', [amt, cur]);
   }
 
   function priceKey(item: ItemView) {
@@ -346,6 +342,10 @@ export function createRenderer(container: HTMLElement, options: RendererOptions 
     } else {
       el.appendChild(h('div', 'dm-deco'));
     }
+    // Сезонное оформление (снег, гирлянда) рисуется и поверх фото-фона — без него шаблон теряет смысл.
+    // При обновлении цен той же сцены переносим его целиком, чтобы снегопад не начинался заново.
+    const prevDecor = sameScene ? Array.prototype.slice.call(previous!.el.querySelectorAll('[data-decor]')) as HTMLElement[] : [];
+    for (const d of prevDecor.length ? prevDecor : templateDecor(scene.template, SIZE[orientation])) el.appendChild(d);
 
     const head = s.title || s.subtitle
       ? h('div', 'dm-head', [

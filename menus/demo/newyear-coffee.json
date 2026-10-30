@@ -1,0 +1,50 @@
+{
+  "org": { "name": "Demo Kahve", "country": "TR", "currency": "TRY", "locale": "tr", "businessType": "coffee" },
+  "locations": [{ "name": "Demo Kahve", "address": "", "timezone": "Europe/Istanbul" }],
+  "categories": [
+    {
+      "key": "yilbasi",
+      "name": "Yılbaşı Özel",
+      "nameSecondary": "New Year specials",
+      "items": [
+        { "name": "Zencefilli Kurabiye Latte", "nameSecondary": "Gingerbread latte", "description": "Espresso, süt, zencefil ve tarçın", "price": 195, "badges": ["new"], "featured": true },
+        { "name": "Kestaneli Latte", "nameSecondary": "Chestnut latte", "description": "Kestane şurubu, süt köpüğü", "price": 190, "badges": ["new"], "featured": true },
+        { "name": "Beyaz Çikolatalı Mocha", "nameSecondary": "White chocolate mocha", "price": 200, "featured": true },
+        { "name": "Tarçınlı Sıcak Elma", "nameSecondary": "Hot apple cider", "price": 150, "badges": ["vegan"] }
+      ]
+    },
+    {
+      "key": "sicak",
+      "name": "Sıcak Kahveler",
+      "nameSecondary": "Hot coffee",
+      "variantLabels": ["S", "M", "L"],
+      "items": [
+        { "name": "Americano", "variants": { "S": 110, "M": 130, "L": 150 } },
+        { "name": "Latte", "variants": { "S": 130, "M": 150, "L": 170 }, "badges": ["hit"] },
+        { "name": "Cappuccino", "variants": { "S": 130, "M": 150, "L": 170 } },
+        { "name": "Flat White", "variants": { "S": 150 } },
+        { "name": "Türk Kahvesi", "nameSecondary": "Turkish coffee", "variants": { "S": 100 } }
+      ]
+    },
+    {
+      "key": "tatli",
+      "name": "Tatlılar",
+      "nameSecondary": "Desserts",
+      "items": [
+        { "name": "San Sebastian", "portion": "1 dilim", "price": 220, "badges": ["hit"] },
+        { "name": "Brownie", "price": 160 },
+        { "name": "Zencefilli Kurabiye", "nameSecondary": "Gingerbread cookie", "price": 90, "badges": ["new"] }
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "key": "yilbasi",
+      "name": "Yılbaşı menüsü",
+      "template": "newyear",
+      "categories": ["yilbasi", "sicak", "tatli"],
+      "settings": { "title": "Yılbaşı Menüsü", "subtitle": "DEMO · örnek menü, fiyatlar temsilidir", "footerNote": "Mutlu yıllar!" }
+    }
+  ],
+  "showcase": { "slideSec": 6 }
+}

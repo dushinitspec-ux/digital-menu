@@ -1,9 +1,8 @@
-import { randomBytes } from 'node:crypto';
 import type { AddressInfo } from 'node:net';
 import type { PlayerManifest } from '@dm/shared';
 import sharp from 'sharp';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { client, registration, setupApp } from './helpers';
+import { client, manifestOf, pairScreenOn, registration, setupApp } from './helpers';
 
 let env: Awaited<ReturnType<typeof setupApp>>;
 
@@ -22,34 +21,8 @@ async function newOwner(over: Record<string, unknown> = {}) {
   return { c, orgId: res.body.orgId as string, email: reg.email };
 }
 
-/** Проводит экран через сопряжение так же, как это делает телевизор. */
-async function pairScreen(c: ReturnType<typeof client>, orgId: string, name = 'ТВ у кассы') {
-  const token = randomBytes(32).toString('hex');
-  const pairing = await env.app.inject({ method: 'POST', url: '/api/player/pairings', payload: { token } });
-  expect(pairing.statusCode).toBe(201);
-  const { id, code } = pairing.json();
-  expect(code).toMatch(/^\d{6}$/);
-  const locations = await c.get(`/api/orgs/${orgId}/locations`);
-  const claim = await c.post(`/api/orgs/${orgId}/screens/claim`, {
-    code: `${code.slice(0, 3)} ${code.slice(3)}`,
-    locationId: locations.body[0].id,
-    name,
-  });
-  expect(claim.status).toBe(201);
-  const status = await env.app.inject({
-    method: 'GET',
-    url: `/api/player/pairings/${id}`,
-    headers: { authorization: `Bearer ${token}` },
-  });
-  expect(status.json()).toMatchObject({ status: 'claimed', screenId: claim.body.id });
-  return { token, screenId: claim.body.id as string, locationId: locations.body[0].id as string };
-}
-
-async function manifest(token: string): Promise<PlayerManifest> {
-  const res = await env.app.inject({ method: 'GET', url: '/api/player/manifest', headers: { authorization: `Bearer ${token}` } });
-  expect(res.statusCode).toBe(200);
-  return res.json();
-}
+const pairScreen = (c: ReturnType<typeof client>, orgId: string, name?: string) => pairScreenOn(env.app, c, orgId, name);
+const manifest = (token: string) => manifestOf(env.app, token);
 
 describe('registration and access', () => {
   it('registers an owner with a demo menu and session', async () => {

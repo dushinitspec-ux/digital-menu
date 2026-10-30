@@ -1,6 +1,9 @@
+import { randomBytes } from 'node:crypto';
 import { mkdtemp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import type { PlayerManifest } from '@dm/shared';
+import { expect } from 'vitest';
 import { buildApp } from '../src/app';
 import { loadConfig } from '../src/config';
 import { createDb, migrate } from '../src/db';
@@ -88,3 +91,32 @@ export const registration = (over: Record<string, unknown> = {}) => ({
   timezone: 'Europe/Moscow',
   ...over,
 });
+
+/** Проводит экран через сопряжение так же, как это делает телевизор. */
+export async function pairScreenOn(app: App, c: ReturnType<typeof client>, orgId: string, name = 'ТВ у кассы') {
+  const token = randomBytes(32).toString('hex');
+  const pairing = await app.inject({ method: 'POST', url: '/api/player/pairings', payload: { token } });
+  expect(pairing.statusCode).toBe(201);
+  const { id, code } = pairing.json();
+  expect(code).toMatch(/^\d{6}$/);
+  const locations = await c.get(`/api/orgs/${orgId}/locations`);
+  const claim = await c.post(`/api/orgs/${orgId}/screens/claim`, {
+    code: `${code.slice(0, 3)} ${code.slice(3)}`,
+    locationId: locations.body[0].id,
+    name,
+  });
+  expect(claim.status).toBe(201);
+  const status = await app.inject({
+    method: 'GET',
+    url: `/api/player/pairings/${id}`,
+    headers: { authorization: `Bearer ${token}` },
+  });
+  expect(status.json()).toMatchObject({ status: 'claimed', screenId: claim.body.id });
+  return { token, screenId: claim.body.id as string, locationId: locations.body[0].id as string };
+}
+
+export async function manifestOf(app: App, token: string): Promise<PlayerManifest> {
+  const res = await app.inject({ method: 'GET', url: '/api/player/manifest', headers: { authorization: `Bearer ${token}` } });
+  expect(res.statusCode).toBe(200);
+  return res.json();
+}
