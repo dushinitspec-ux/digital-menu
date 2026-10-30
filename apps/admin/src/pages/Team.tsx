@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { api, ApiError, type Member } from '../api';
 import { useT } from '../i18n';
 import { useOrg } from '../session';
-import { Button, Field, PageHead, Sheet, Spinner, timeAgo, useToast } from '../ui';
+import { Button, Field, PageHead, Sheet, Spinner, timeAgo, useToast, useConfirm } from '../ui';
 
 const ASSIGNABLE: Role[] = ['admin', 'editor', 'viewer'];
 
 export function TeamPage() {
   const t = useT();
+  const ask = useConfirm();
   const { base, org } = useOrg();
   const qc = useQueryClient();
   const toast = useToast();
@@ -34,7 +35,7 @@ export function TeamPage() {
     await refresh();
   };
   const remove = async (userId: string) => {
-    if (!confirm(t('confirmDelete'))) return;
+    if (!(await ask(t('confirmDelete')))) return;
     await api.del(`${base}/members/${userId}`);
     await refresh();
   };

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { api, ApiError, type Location, type Screen } from '../api';
 import { useT } from '../i18n';
-import { useOrg } from '../session';
+import { useOrg, useSession } from '../session';
 import { Button, Empty, Field, PageHead, Sheet, Spinner, timeAgo, useToast } from '../ui';
 import { useScenes } from './Scenes';
 
@@ -26,6 +26,7 @@ export function ScreensPage() {
   const [name, setName] = useState('');
   const [locationId, setLocationId] = useState('');
   const [error, setError] = useState('');
+  const { config } = useSession();
   const playerUrl = `${window.location.origin}/player/`;
 
   // QR на экране телевизора ведёт сюда с ?pair=123456 — сразу открываем форму с кодом.
@@ -66,7 +67,7 @@ export function ScreensPage() {
   return (
     <div className="page">
       <PageHead title={t('screens')} actions={canAdmin ? <Button onClick={() => setAdding(true)}>{t('addScreen')}</Button> : null} />
-      <div className="card player-url">
+      <div className="card player-url" hidden={config?.demo}>
         <div>
           <div className="muted small">{t('playerUrl')}</div>
           <code>{playerUrl}</code>
@@ -113,8 +114,8 @@ export function ScreensPage() {
           </>
         }
       >
-        <p className="muted">{t('pairHint')}</p>
-        <code className="code-hint">{playerUrl}</code>
+        <p className="muted">{config?.demo ? t('pairHintDemo') : t('pairHint')}</p>
+        {config?.demo ? null : <code className="code-hint">{playerUrl}</code>}
         <Field label={t('pairCode')}>
           <input className="code-input" inputMode="numeric" autoFocus maxLength={7} value={code} onChange={(e) => setCode(e.target.value)} placeholder="123 456" />
         </Field>

@@ -7,11 +7,12 @@ import { useT } from '../i18n';
 import { MediaPicker, MediaThumb, useMedia } from '../media-picker';
 import { buildLocalScene, ScenePreview } from '../preview';
 import { useOrg } from '../session';
-import { Button, Field, PageHead, Spinner, Switch, useToast } from '../ui';
+import { Button, Field, PageHead, Spinner, Switch, useToast, useConfirm } from '../ui';
 import { useScenes } from './Scenes';
 
 export function SceneEditorPage() {
   const t = useT();
+  const ask = useConfirm();
   const { id } = useParams();
   const { base, org, canEdit } = useOrg();
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ export function SceneEditorPage() {
     }
   };
   const remove = async () => {
-    if (!confirm(t('confirmDelete'))) return;
+    if (!(await ask(t('confirmDelete')))) return;
     try {
       await api.del(`${base}/scenes/${id}`);
       await qc.invalidateQueries({ queryKey: ['scenes', org.id] });

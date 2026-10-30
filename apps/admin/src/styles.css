@@ -1228,3 +1228,34 @@ fieldset {
   color: var(--muted);
   line-height: 1.5;
 }
+
+/* --- Подтверждение --- */
+
+.confirm-backdrop {
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px;
+}
+.confirm {
+  width: 100%;
+  max-width: 380px;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 20px 60px rgba(28, 24, 20, 0.3);
+  animation: sheet-up 0.18s ease;
+}
+.confirm p {
+  margin: 0 0 18px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+[hidden] {
+  display: none !important;
+}

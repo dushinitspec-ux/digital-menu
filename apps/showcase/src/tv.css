@@ -1,0 +1,202 @@
+/* Окно «телевизора» поверх панели: тёмная рамка как у ТВ, независимо от темы панели. */
+.stv {
+  --stv-ink: #f0e9df;
+  --stv-muted: #a1978b;
+  --stv-frame: #161412;
+  --stv-line: #34302b;
+  --stv-ok: #52ad7c;
+  position: fixed;
+  z-index: 35;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: min(480px, 42vw);
+  padding: 8px 8px 6px;
+  border-radius: 16px;
+  background: var(--stv-frame);
+  color: var(--stv-ink);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  font-family: 'Manrope', system-ui, sans-serif;
+  transition: width 0.25s ease;
+}
+.stv.is-large {
+  width: min(900px, calc(100vw - 300px));
+}
+.stv.is-portrait {
+  width: min(270px, 30vw);
+}
+.stv.is-portrait.is-large {
+  width: min(420px, 40vw);
+}
+.stv-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px 8px;
+}
+.stv-dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6d655c;
+}
+.stv.is-online .stv-dot {
+  background: var(--stv-ok);
+  box-shadow: 0 0 0 3px rgba(82, 173, 124, 0.2);
+}
+.stv-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stv-btn {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--stv-ink);
+  font-size: 14px;
+  cursor: pointer;
+}
+.stv-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+.stv-frame {
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
+}
+.stv-frame:fullscreen .stv-screen {
+  height: 100%;
+  aspect-ratio: auto;
+}
+.stv-screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+.stv.is-portrait .stv-screen {
+  aspect-ratio: 9 / 16;
+}
+.stv-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 10px;
+  padding: 8px 4px 2px;
+  font-size: 11px;
+  color: var(--stv-muted);
+}
+.stv-foot b {
+  color: var(--stv-ink);
+  font-weight: 700;
+}
+.stv-link {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--stv-ink);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.stv-pill {
+  display: none;
+  border: 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--stv-frame);
+  color: var(--stv-ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.stv.is-hidden {
+  width: auto;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+.stv.is-hidden > :not(.stv-pill) {
+  display: none;
+}
+.stv.is-hidden .stv-pill {
+  display: block;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.stv button:focus-visible {
+  outline: 2px solid #d6995c;
+  outline-offset: 2px;
+}
+
+.stv-pair {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6%;
+  padding: 6%;
+  text-align: center;
+  background: radial-gradient(ellipse at 20% 0%, #2a2216 0%, #0d0c0a 60%);
+  container-type: inline-size;
+}
+.stv-pair-kicker {
+  font-size: 3.4cqw;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #c9a96a;
+}
+.stv-pair-code {
+  font-family: 'Unbounded', 'Arial Black', sans-serif;
+  font-weight: 800;
+  font-size: 15cqw;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+.stv-pair-text {
+  font-size: 3.6cqw;
+  color: #d8cfc3;
+}
+
+/* Телефон: окно над нижним меню панели. */
+@media (max-width: 959px) {
+  .stv {
+    bottom: calc(64px + 12px + env(safe-area-inset-bottom, 0px));
+    width: min(320px, 62vw);
+  }
+  .stv.is-large {
+    width: calc(100vw - 32px);
+  }
+  .stv.is-portrait {
+    width: min(180px, 42vw);
+  }
+  .stv-foot span {
+    display: none;
+  }
+}
+
+/* Панель освобождает место под телевизор, чтобы он ничего не закрывал. */
+@media (min-width: 960px) {
+  body.has-tv .content {
+    padding-right: calc(min(480px, 42vw) + 56px);
+  }
+  body.has-tv.tv-large .content {
+    padding-right: 36px;
+  }
+}
+@media (max-width: 959px) {
+  body.has-tv .content {
+    padding-bottom: calc(var(--tabbar-h) + 300px + env(safe-area-inset-bottom, 0px));
+  }
+}

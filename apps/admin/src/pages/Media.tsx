@@ -3,15 +3,16 @@ import { api } from '../api';
 import { useT } from '../i18n';
 import { MediaThumb, UploadButton, useMedia } from '../media-picker';
 import { useOrg } from '../session';
-import { Empty, PageHead, Spinner } from '../ui';
+import { Empty, PageHead, Spinner, useConfirm } from '../ui';
 
 export function MediaPage() {
   const t = useT();
+  const ask = useConfirm();
   const { base, org, canEdit } = useOrg();
   const qc = useQueryClient();
   const media = useMedia();
   const remove = async (id: string) => {
-    if (!confirm(t('confirmDelete'))) return;
+    if (!(await ask(t('confirmDelete')))) return;
     await api.del(`${base}/media/${id}`);
     await qc.invalidateQueries({ queryKey: ['media', org.id] });
   };

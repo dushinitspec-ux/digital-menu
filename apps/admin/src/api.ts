@@ -55,6 +55,8 @@ export interface PublicConfig {
   currency: Currency;
   locale: Locale;
   timezone: string;
+  /** Демо-режим в браузере: экран показывается в окне на странице, а не по адресу плеера. */
+  demo?: boolean;
 }
 
 export interface OrgSummary {

@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { api, ApiError, type Location } from '../api';
 import { useT } from '../i18n';
 import { useOrg, useSession } from '../session';
-import { Button, Field, PageHead, Sheet, Spinner, useToast } from '../ui';
+import { Button, Field, PageHead, Sheet, Spinner, useToast, useConfirm } from '../ui';
 
 export function LocationsPage() {
   const t = useT();
+  const ask = useConfirm();
   const { base, org, canAdmin } = useOrg();
   const { config } = useSession();
   const qc = useQueryClient();
@@ -28,7 +29,7 @@ export function LocationsPage() {
     }
   };
   const remove = async () => {
-    if (!editing?.id || !confirm(t('confirmDelete'))) return;
+    if (!editing?.id || !(await ask(t('confirmDelete')))) return;
     try {
       await api.del(`${base}/locations/${editing.id}`);
       setEditing(null);

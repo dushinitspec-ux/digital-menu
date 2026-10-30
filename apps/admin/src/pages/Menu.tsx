@@ -5,7 +5,7 @@ import { api, type Catalog, type Category, type Item, type Location } from '../a
 import { useT } from '../i18n';
 import { MediaPicker } from '../media-picker';
 import { useOrg } from '../session';
-import { Button, Empty, Field, PageHead, Sheet, Spinner, Switch, useToast } from '../ui';
+import { Button, Empty, Field, PageHead, Sheet, Spinner, Switch, useToast, useConfirm } from '../ui';
 
 type ItemDraft = Omit<Item, 'id' | 'sort' | 'imageUrl'> & { id?: string; imageUrl: string | null };
 
@@ -282,6 +282,7 @@ function ItemSheet({
   onSaved: () => void;
 }) {
   const t = useT();
+  const ask = useConfirm();
   const { base } = useOrg();
   const toast = useToast();
   const [item, setItem] = useState<ItemDraft>(draft);
@@ -338,7 +339,7 @@ function ItemSheet({
   };
 
   const remove = async () => {
-    if (!item.id || !confirm(t('confirmDelete'))) return;
+    if (!item.id || !(await ask(t('confirmDelete')))) return;
     await api.del(`${base}/items/${item.id}`);
     onSaved();
   };
@@ -449,6 +450,7 @@ function ItemSheet({
 
 function CategorySheet({ draft, onClose, onSaved }: { draft: Partial<Category>; onClose: () => void; onSaved: () => void }) {
   const t = useT();
+  const ask = useConfirm();
   const { base } = useOrg();
   const toast = useToast();
   const [name, setName] = useState(draft.name ?? '');
@@ -476,7 +478,7 @@ function CategorySheet({ draft, onClose, onSaved }: { draft: Partial<Category>; 
     }
   };
   const remove = async () => {
-    if (!draft.id || !confirm(t('confirmDelete'))) return;
+    if (!draft.id || !(await ask(t('confirmDelete')))) return;
     await api.del(`${base}/categories/${draft.id}`);
     onSaved();
   };

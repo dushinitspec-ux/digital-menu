@@ -5,12 +5,13 @@ import { useNavigate, useParams } from 'react-router';
 import { api, type Location } from '../api';
 import { useT } from '../i18n';
 import { useOrg } from '../session';
-import { Button, Field, PageHead, Spinner, timeAgo, useToast } from '../ui';
+import { Button, Field, PageHead, Spinner, timeAgo, useToast, useConfirm } from '../ui';
 import { useScenes } from './Scenes';
 import { useScreens } from './Screens';
 
 export function ScreenDetailPage() {
   const t = useT();
+  const ask = useConfirm();
   const { id } = useParams();
   const { base, org, canAdmin, canEdit } = useOrg();
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ export function ScreenDetailPage() {
     toast(t('reloadSent'));
   };
   const unpair = async () => {
-    if (!confirm(t('confirmDelete'))) return;
+    if (!(await ask(t('confirmDelete')))) return;
     await api.del(`${base}/screens/${id}`);
     await qc.invalidateQueries({ queryKey: ['screens', org.id] });
     navigate('/screens');

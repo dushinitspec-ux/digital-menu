@@ -122,6 +122,41 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
 export const useToast = () => useContext(ToastContext);
 
+/** Подтверждение внутри страницы: системный confirm() блокирует интерфейс и не работает во встраиваемых окнах. */
+const ConfirmContext = createContext<(message: string) => Promise<boolean>>(async () => false);
+
+export function ConfirmProvider({ children, labels }: { children: ReactNode; labels: () => { ok: string; cancel: string } }) {
+  const [pending, setPending] = useState<{ message: string; resolve: (v: boolean) => void } | null>(null);
+  const ask = useCallback((message: string) => new Promise<boolean>((resolve) => setPending({ message, resolve })), []);
+  const close = (value: boolean) => {
+    pending?.resolve(value);
+    setPending(null);
+  };
+  const { ok, cancel } = labels();
+  return (
+    <ConfirmContext.Provider value={ask}>
+      {children}
+      {pending ? (
+        <div className="sheet-backdrop confirm-backdrop" onMouseDown={(e) => e.target === e.currentTarget && close(false)}>
+          <div className="confirm" role="alertdialog" aria-modal="true" aria-label={pending.message}>
+            <p>{pending.message}</p>
+            <div className="confirm-actions">
+              <Button variant="ghost" onClick={() => close(false)} autoFocus>
+                {cancel}
+              </Button>
+              <Button variant="danger" onClick={() => close(true)}>
+                {ok}
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </ConfirmContext.Provider>
+  );
+}
+
+export const useConfirm = () => useContext(ConfirmContext);
+
 export function timeAgo(iso: string | null, locale: string, never: string) {
   if (!iso) return never;
   const diff = (Date.now() - new Date(iso).getTime()) / 1000;

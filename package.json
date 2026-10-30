@@ -15,6 +15,7 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "e2e": "node e2e/run.mjs",
-    "demo": "pnpm --filter @dm/demo build"
+    "demo": "pnpm --filter @dm/demo build",
+    "showcase": "pnpm --filter @dm/showcase build"
   }
 }
