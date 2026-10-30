@@ -1,0 +1,19 @@
+{
+  "name": "digital-menu",
+  "private": true,
+  "version": "0.1.0",
+  "description": "SaaS: цифровое меню на ТВ для кофеен, ресторанов, баров и кальянных",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @dm/api --filter @dm/admin --filter @dm/player dev",
+    "build": "pnpm --filter @dm/admin build && pnpm --filter @dm/player build && pnpm --filter @dm/api build",
+    "start": "pnpm --filter @dm/api start",
+    "migrate": "pnpm --filter @dm/api migrate",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "e2e": "node e2e/run.mjs"
+  }
+}
