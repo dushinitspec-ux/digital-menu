@@ -1,4 +1,4 @@
-/* Промо-ролик поверх новогоднего шаблона рендерера (.dm-tpl-newyear): палитра и шрифты оттуда. */
+/* Промо-ролик поверх новогоднего шаблона рендерера (.dm-festive): палитра и шрифты оттуда. */
 
 .sc-root {
   padding: 0;
@@ -55,7 +55,7 @@
   width: 880px;
   height: 880px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(236, 198, 111, 0.32) 0%, rgba(236, 198, 111, 0) 62%);
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.32) 0%, rgba(var(--accent-rgb), 0) 62%);
   animation: sc-glow 3.2s ease-in-out infinite alternate;
 }
 .sc-img {
@@ -66,7 +66,7 @@
   object-fit: cover;
   border-radius: 50%;
   border: 6px solid var(--accent);
-  box-shadow: 0 0 0 14px rgba(236, 198, 111, 0.16), 0 30px 80px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 14px rgba(var(--accent-rgb), 0.16), 0 30px 80px rgba(0, 0, 0, 0.5);
   animation: sc-breathe 9s ease-in-out infinite alternate;
 }
 .sc-slide:not(.has-img) .sc-visual {
@@ -127,7 +127,7 @@
   font-weight: 500;
   font-size: 136px;
   line-height: 1.04;
-  background: linear-gradient(180deg, #fff6d9 0%, #f0cd78 52%, #c39237 100%);
+  background: var(--gold-text);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -164,12 +164,12 @@
   padding: 16px 46px 18px;
   border-radius: 999px;
   border: 2px solid var(--accent);
-  background: rgba(5, 24, 17, 0.62);
+  background: var(--panel);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 84px;
   line-height: 1;
-  color: #fff2d2;
+  color: var(--price);
 }
 .sc-chip {
   font-size: 54px;
@@ -198,7 +198,7 @@
   font-size: 150px;
   line-height: 1.05;
   padding: 0 12px 10px;
-  background: linear-gradient(180deg, #fff6d9 0%, #f0cd78 52%, #c39237 100%);
+  background: var(--gold-text);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -215,9 +215,9 @@
   font-weight: 700;
   font-size: 280px;
   line-height: 1;
-  color: #fff2d2;
+  color: var(--price);
   padding: 0 6px;
-  text-shadow: 0 0 60px rgba(236, 198, 111, 0.45);
+  text-shadow: 0 0 60px rgba(var(--accent-rgb), 0.45);
 }
 .sc-closing-sub {
   margin-top: 30px;
@@ -225,7 +225,7 @@
   font-weight: 600;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: #eadbb6;
+  color: var(--subtitle);
 }
 
 /* Полоса прогресса слайда */
@@ -238,7 +238,7 @@
   margin-left: -210px;
   border-radius: 2px;
   overflow: hidden;
-  background: rgba(236, 198, 111, 0.2);
+  background: rgba(var(--accent-rgb), 0.2);
   z-index: 2;
 }
 .sc-progress-fill {

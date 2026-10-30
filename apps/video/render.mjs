@@ -25,6 +25,7 @@ const USAGE = `Usage: render.mjs <menu.json> [options]
   --out <dir>             куда сложить ролики (по умолчанию apps/video/output)
   --orientation <o>       landscape | portrait | both (по умолчанию landscape)
   --only <id,...>         снять только эти ролики (список — с --list)
+  --location <key>        цены этой точки (key из locations файла меню)
   --fps <n>               кадров в секунду (по умолчанию 30)
   --seconds <n>           обрезать каждый ролик до n секунд
   --list                  только показать, какие ролики есть в меню`;
@@ -35,6 +36,7 @@ const { values: args, positionals } = parseArgs({
     out: { type: 'string' },
     orientation: { type: 'string', default: 'landscape' },
     only: { type: 'string' },
+    location: { type: 'string' },
     fps: { type: 'string', default: '30' },
     seconds: { type: 'string' },
     list: { type: 'boolean', default: false },
@@ -100,7 +102,7 @@ async function openPage(orientation, job) {
   page.on('console', (msg) => msg.type() === 'error' && console.error(`  console: ${msg.text()}`));
   await page.addInitScript((input) => {
     window.__DM_INPUT__ = input;
-  }, { menu, job, orientation, assetBase: `${base}menu-assets/` });
+  }, { menu, job, location: args.location ?? null, orientation, assetBase: `${base}menu-assets/` });
   // Часы ставим до загрузки и сразу останавливаем: без pauseAt они идут в реальном времени,
   // а так все setTimeout/setInterval/requestAnimationFrame страницы срабатывают только по runFor.
   const now = Date.now();
@@ -173,7 +175,7 @@ try {
         const ready = await waitForValue(page, () => window.__DM_READY__ ?? window.__DM_PLAN__?.error);
         if (typeof ready === 'string') throw new Error(ready);
         const durationMs = args.seconds ? Math.min(ready, Number(args.seconds) * 1000) : ready;
-        const file = path.join(outDir, `${job.id}-${orientation}.mp4`);
+        const file = path.join(outDir, `${[job.id, args.location, orientation].filter(Boolean).join('-')}.mp4`);
         console.log(`${job.title} · ${orientation} · ${Math.round(durationMs / 1000)}s → ${path.relative(cwd, file)}`);
         await record(page, file, durationMs);
         await page.context().close();

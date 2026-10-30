@@ -12,6 +12,8 @@ import { createShowcase } from './showcase';
 interface Input {
   menu: unknown;
   job: string | null;
+  /** key точки, чьи цены показать; null — общие цены. */
+  location: string | null;
   orientation: Orientation;
   assetBase: string;
 }
@@ -72,8 +74,13 @@ async function main() {
   }
   const menu = parsed.data;
   const resolveImage = (p: string) => `${input.assetBase}${p.split('/').map(encodeURIComponent).join('/')}`;
-  const scenes = menuFileScenes(menu, resolveImage);
-  const slides = menuFileShowcase(menu, resolveImage);
+  const location = input.location ?? undefined;
+  if (location && !menu.locations.some((l) => l.key === location)) {
+    window.__DM_PLAN__ = { error: `Unknown location "${location}"` };
+    return;
+  }
+  const scenes = menuFileScenes(menu, resolveImage, location);
+  const slides = menuFileShowcase(menu, resolveImage, location);
   const ctx = { currency: menu.org.currency, locale: menu.org.locale };
 
   if (input.job === null) {
@@ -88,6 +95,7 @@ async function main() {
 
   if (input.job === 'showcase') {
     const show = createShowcase(app, slides, {
+      template: menu.showcase.template ?? 'newyear',
       orientation: input.orientation,
       ...ctx,
       orgName: menu.org.name,

@@ -3,6 +3,7 @@ import './styles.css';
 import {
   currencyBeforeAmount,
   currencySymbol,
+  FESTIVE_TEMPLATES,
   formatAmount,
   type Badge,
   type CategoryView,
@@ -47,6 +48,7 @@ const DEFAULT_COLUMNS: Record<TemplateId, Record<Orientation, number>> = {
   crema: { landscape: 3, portrait: 2 },
   neon: { landscape: 2, portrait: 1 },
   newyear: { landscape: 3, portrait: 1 },
+  winter: { landscape: 3, portrait: 1 },
 };
 
 const LABELS: Record<Locale, Record<Badge | 'soldOut' | 'empty', string>> = {
@@ -309,7 +311,8 @@ export function createRenderer(container: HTMLElement, options: RendererOptions 
   function buildScene(scene: SceneView, ctx: RenderContext, previous: typeof current) {
     const s = scene.settings;
     const sameScene = previous !== null && previous.scene.id === scene.id && previous.scene.template === scene.template;
-    const el = h('div', `dm-scene dm-tpl-${scene.template} dm-${orientation}${sameScene ? ' dm-quiet' : ' dm-enter'}`);
+    const festive = FESTIVE_TEMPLATES.includes(scene.template) ? ' dm-festive' : '';
+    const el = h('div', `dm-scene dm-tpl-${scene.template}${festive} dm-${orientation}${sameScene ? ' dm-quiet' : ' dm-enter'}`);
     if (s.accentColor) el.style.setProperty('--accent', s.accentColor);
 
     const bgUrl = scene.background?.url ?? null;

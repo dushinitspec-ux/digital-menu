@@ -1,7 +1,7 @@
-import type { TemplateId } from '@dm/shared';
+import { FESTIVE_TEMPLATES, type TemplateId } from '@dm/shared';
 import { h } from './dom';
 
-// Оформление шаблонов, которое нельзя описать одним CSS: снегопад и гирлянда новогоднего шаблона.
+// Оформление шаблонов, которое нельзя описать одним CSS: снегопад и гирлянда новогодних шаблонов.
 // Всё анимируется только через transform и opacity — это тянут и слабые ТВ-приставки.
 
 interface Size {
@@ -154,7 +154,7 @@ function sparkles(size: Size): HTMLElement {
 }
 
 export function templateDecor(template: TemplateId, size: Size): HTMLElement[] {
-  if (template !== 'newyear') return [];
+  if (!FESTIVE_TEMPLATES.includes(template)) return [];
   const parts = [sparkles(size), snow(), garland(size), ...baubles(size)];
   for (const p of parts) p.setAttribute('data-decor', '');
   return parts;

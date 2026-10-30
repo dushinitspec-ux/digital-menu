@@ -26,6 +26,8 @@ const menuItemSchema = z.object({
   price: majorPrice.nullable().default(null),
   /** Цены по размерам: { "S": 160, "M": 185 }. Порядок ключей — порядок колонок. */
   variants: z.record(name(20), majorPrice).default({}),
+  /** Своя цена в отдельных точках: { "merkez": 465 }. Ключи — key из locations. */
+  locationPrices: z.record(key, majorPrice).default({}),
   badges: z.array(z.enum(BADGES)).max(3).default([]),
   soldOut: z.boolean().default(false),
   /** Фото позиции: путь относительно файла меню. */
@@ -60,7 +62,7 @@ export const menuFileSchema = z
       businessType: businessTypeSchema,
     }),
     locations: z
-      .array(z.object({ name: name(120), address: text(300), timezone: timezoneSchema }))
+      .array(z.object({ key: key.optional(), name: name(120), address: text(300), timezone: timezoneSchema }))
       .min(1)
       .max(100),
     categories: z.array(menuCategorySchema).min(1).max(60),
@@ -68,6 +70,7 @@ export const menuFileSchema = z
     /** Промо-ролик: слайды с позициями featured и финальное поздравление. */
     showcase: z
       .object({
+        template: z.enum(['newyear', 'winter']).default('newyear'),
         kicker: text(60),
         slideSec: z.number().min(3).max(20).default(6),
         closingTitle: text(60),
@@ -77,6 +80,12 @@ export const menuFileSchema = z
       .default({}),
   })
   .superRefine((menu, ctx) => {
+    const locationKeys = new Set<string>();
+    menu.locations.forEach((l, i) => {
+      if (!l.key) return;
+      if (locationKeys.has(l.key)) ctx.addIssue({ code: 'custom', path: ['locations', i, 'key'], message: `Duplicate location key "${l.key}"` });
+      locationKeys.add(l.key);
+    });
     const keys = new Set<string>();
     menu.categories.forEach((c, i) => {
       if (keys.has(c.key)) ctx.addIssue({ code: 'custom', path: ['categories', i, 'key'], message: `Duplicate category key "${c.key}"` });
@@ -85,6 +94,15 @@ export const menuFileSchema = z
         const labels = Object.keys(item.variants);
         if (item.price === null && labels.length === 0) {
           ctx.addIssue({ code: 'custom', path: ['categories', i, 'items', j], message: `"${item.name}" has neither price nor variants` });
+        }
+        for (const loc of Object.keys(item.locationPrices)) {
+          if (!locationKeys.has(loc)) {
+            ctx.addIssue({ code: 'custom', path: ['categories', i, 'items', j, 'locationPrices'], message: `Unknown location "${loc}" for "${item.name}"` });
+          }
+        }
+        if (Object.keys(item.locationPrices).length && labels.length) {
+          // Своя цена точки хранится одна на позицию (item_location_overrides.price) — для размеров её нет.
+          ctx.addIssue({ code: 'custom', path: ['categories', i, 'items', j, 'locationPrices'], message: `"${item.name}" has sizes: location prices work only with a single price` });
         }
         const unknown = c.variantLabels.length ? labels.filter((l) => !c.variantLabels.includes(l)) : [];
         if (unknown.length) {
@@ -107,8 +125,11 @@ export function menuItemVariants(item: MenuFileItem, variantLabels: string[]): V
   return labels.map((label) => ({ label, price: item.variants[label]! }));
 }
 
-/** Сцены в том виде, в каком их рисует плеер, — без базы: для видео-рендера и проверки файла. */
-export function menuFileScenes(menu: MenuFile, resolveImage: (path: string) => string | null = () => null): SceneView[] {
+/**
+ * Сцены в том виде, в каком их рисует плеер, — без базы: для видео-рендера и проверки файла.
+ * location — key точки, чьи цены показать; без него — общие цены.
+ */
+export function menuFileScenes(menu: MenuFile, resolveImage: (path: string) => string | null = () => null, location?: string): SceneView[] {
   const categories = new Map<string, CategoryView>();
   for (const c of menu.categories) {
     const items: ItemView[] = c.items.map((item, i) => {
@@ -119,7 +140,7 @@ export function menuFileScenes(menu: MenuFile, resolveImage: (path: string) => s
         nameSecondary: item.nameSecondary,
         description: item.description,
         portion: item.portion,
-        price: item.price,
+        price: (location ? item.locationPrices[location] : undefined) ?? item.price,
         variants: menuItemVariants(item, c.variantLabels),
         badges: item.badges,
         image: url ? { id: `${c.key}-${i}-img`, kind: 'image', url, thumbUrl: url, width: null, height: null } : null,
@@ -145,8 +166,8 @@ export interface ShowcaseSlide {
 }
 
 /** Позиции для промо-ролика: отмеченные featured, а если таких нет — с меткой «Новинка» или «Акция». */
-export function menuFileShowcase(menu: MenuFile, resolveImage: (path: string) => string | null = () => null): ShowcaseSlide[] {
-  const scenes = menuFileScenes(menu, resolveImage);
+export function menuFileShowcase(menu: MenuFile, resolveImage: (path: string) => string | null = () => null, location?: string): ShowcaseSlide[] {
+  const scenes = menuFileScenes(menu, resolveImage, location);
   const byId = new Map(scenes.flatMap((s) => s.categories.flatMap((c) => c.items.map((i) => [i.id, i] as const))));
   const pick = (test: (item: MenuFileItem) => boolean) =>
     menu.categories.flatMap((c) =>

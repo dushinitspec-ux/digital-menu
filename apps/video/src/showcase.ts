@@ -3,9 +3,10 @@ import { formatPrice, type Currency, type Locale, type Orientation, type Showcas
 import './showcase.css';
 
 // Промо-ролик: по слайду на позицию (крупно название, описание, цена) и финальное поздравление.
-// Оформление — новогоднего шаблона: тот же снег, гирлянда и палитра, что и на экранах меню.
+// Оформление — новогоднего шаблона (newyear или winter): тот же снег, гирлянда и палитра, что и на экранах меню.
 
 export interface ShowcaseOptions {
+  template: 'newyear' | 'winter';
   orientation: Orientation;
   currency: Currency;
   locale: Locale;
@@ -100,11 +101,11 @@ function closingSlide(o: ShowcaseOptions): HTMLElement {
 
 export function createShowcase(container: HTMLElement, slides: ShowcaseSlide[], o: ShowcaseOptions): { durationMs: number } {
   const size = SIZE[o.orientation];
-  const scene = el('div', `dm-scene dm-tpl-newyear dm-${o.orientation} is-shown sc-root`);
+  const scene = el('div', `dm-scene dm-tpl-${o.template} dm-festive dm-${o.orientation} is-shown sc-root`);
   scene.style.width = `${size.w}px`;
   scene.style.height = `${size.h}px`;
   scene.appendChild(el('div', 'dm-deco'));
-  for (const d of templateDecor('newyear', size)) scene.appendChild(d);
+  for (const d of templateDecor(o.template, size)) scene.appendChild(d);
 
   const kicker = o.kicker || DEFAULTS[o.locale].kicker;
   const stage = el('div', 'sc-stage');

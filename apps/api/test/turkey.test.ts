@@ -1,4 +1,4 @@
-import { menuFileSchema } from '@dm/shared';
+import { menuFileScenes, menuFileSchema } from '@dm/shared';
 import sharp from 'sharp';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { importMenu } from '../src/menu-import';
@@ -21,8 +21,8 @@ const menuFile = (over: Record<string, unknown> = {}) =>
   menuFileSchema.parse({
     org: { name: 'Zincir Kahve', country: 'TR', currency: 'TRY', locale: 'tr', businessType: 'coffee' },
     locations: [
-      { name: 'Fethiye', timezone: 'Europe/Istanbul' },
-      { name: 'Kaş', address: 'Merkez', timezone: 'Europe/Istanbul' },
+      { key: 'fethiye', name: 'Fethiye', timezone: 'Europe/Istanbul' },
+      { key: 'kas', name: 'Kaş', address: 'Merkez', timezone: 'Europe/Istanbul' },
     ],
     categories: [
       {
@@ -39,7 +39,7 @@ const menuFile = (over: Record<string, unknown> = {}) =>
       {
         key: 'yilbasi',
         name: 'Yılbaşı Özel',
-        items: [{ name: 'Kestaneli Latte', price: 190.5, badges: ['new'], featured: true, image: 'latte.png' }],
+        items: [{ name: 'Kestaneli Latte', price: 190.5, locationPrices: { kas: 175 }, badges: ['new'], featured: true, image: 'latte.png' }],
       },
     ],
     scenes: [
@@ -72,12 +72,14 @@ describe('Turkey', () => {
       categories: [{ ...base.categories[0]!, items: [{ name: 'Latte', variants: { XL: 200 } }, { name: 'Free' }] }],
       scenes: [{ key: 'x', name: 'X', template: 'newyear', categories: ['nope'] }],
     };
+    broken.categories[0]!.items.push({ name: 'Mocha', price: 200, locationPrices: { bodrum: 210 } } as never);
     const result = menuFileSchema.safeParse(broken);
     expect(result.success).toBe(false);
     const messages = result.error!.issues.map((i) => i.message).join('\n');
     expect(messages).toMatch(/Unknown sizes XL/);
     expect(messages).toMatch(/neither price nor variants/);
     expect(messages).toMatch(/Unknown category "nope"/);
+    expect(messages).toMatch(/Unknown location "bodrum"/);
   });
 
   it('imports a chain from a menu file and serves it to a paired TV', async () => {
@@ -114,6 +116,11 @@ describe('Turkey', () => {
     const [special] = scene.categories[0]!.items;
     expect(special).toMatchObject({ name: 'Kestaneli Latte', price: 19050, badges: ['new'] });
     expect(special!.image?.thumbUrl).toMatch(/-thumb\.webp$/);
+    // Экран стоит в Фетхие — общая цена; в Каше действует своя.
+    const [override] = await env.sql<{ price: number; name: string }[]>`
+      select o.price, l.name from item_location_overrides o join locations l on l.id = o.location_id where o.item_id = ${special!.id}`;
+    expect(override).toEqual({ price: 17500, name: 'Kaş' });
+    expect(menuFileScenes(menu, undefined, 'kas')[0]!.categories[0]!.items[0]!.price).toBe(17500);
     expect(scene.categories[1]!.items[0]!.variants).toEqual([
       { label: 'S', price: 13000 },
       { label: 'M', price: 15000 },

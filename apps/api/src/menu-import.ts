@@ -86,12 +86,18 @@ export async function importMenu(sql: Db, storage: Storage, menu: MenuFile, opts
       }
 
       // Точки только добавляются: к существующим уже привязаны экраны.
-      const known = new Set((await tx<{ name: string }[]>`select name from locations where org_id = ${orgId}`).map((l) => l.name));
+      const known = new Map((await tx<{ id: string; name: string }[]>`select id, name from locations where org_id = ${orgId}`).map((l) => [l.name, l.id]));
+      const locationIds = new Map<string, string>();
       let locations = 0;
       for (const l of menu.locations) {
-        if (known.has(l.name)) continue;
-        await tx`insert into locations (org_id, name, address, timezone) values (${orgId}, ${l.name}, ${l.address}, ${l.timezone})`;
-        locations++;
+        let id = known.get(l.name);
+        if (!id) {
+          const [row] = await tx<{ id: string }[]>`
+            insert into locations (org_id, name, address, timezone) values (${orgId}, ${l.name}, ${l.address}, ${l.timezone}) returning id`;
+          id = row!.id;
+          locations++;
+        }
+        if (l.key) locationIds.set(l.key, id);
       }
 
       const categoryIds = new Map<string, string>();
@@ -110,12 +116,18 @@ export async function importMenu(sql: Db, storage: Storage, menu: MenuFile, opts
             imageId = await storeImage(tx, storage, orgId, item.image, await opts.readImage(item.image), uploaded);
             images++;
           }
-          await tx`
+          const [itemRow] = await tx<{ id: string }[]>`
             insert into items (org_id, category_id, name, name_secondary, description, portion, price, variants, badges,
                                image_id, sold_out, sort)
             values (${orgId}, ${row!.id}, ${item.name}, ${item.nameSecondary}, ${item.description}, ${item.portion},
                     ${item.price}, ${tx.json(menuItemVariants(item, c.variantLabels) as never)}, ${item.badges}::text[],
-                    ${imageId}, ${item.soldOut}, ${ii})`;
+                    ${imageId}, ${item.soldOut}, ${ii})
+            returning id`;
+          // Цены отдельных точек — тем же механизмом, что и правка цены точки в панели.
+          for (const [loc, price] of Object.entries(item.locationPrices)) {
+            await tx`insert into item_location_overrides (item_id, location_id, price)
+                     values (${itemRow!.id}, ${locationIds.get(loc)!}, ${price})`;
+          }
           items++;
         }
       }

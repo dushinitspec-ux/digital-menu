@@ -7,7 +7,10 @@ export type Currency = 'RUB' | 'EUR' | 'TRY';
 export type Role = 'owner' | 'admin' | 'editor' | 'viewer';
 export type BusinessType = 'coffee' | 'restaurant' | 'cafe' | 'bar' | 'hookah';
 
-export const TEMPLATE_IDS = ['noir', 'crema', 'neon', 'newyear'] as const;
+export const TEMPLATE_IDS = ['noir', 'crema', 'neon', 'newyear', 'winter'] as const;
+
+/** Новогодние шаблоны: снег, гирлянда, общая вёрстка. */
+export const FESTIVE_TEMPLATES: readonly TemplateId[] = ['newyear', 'winter'];
 export type TemplateId = (typeof TEMPLATE_IDS)[number];
 
 export const BADGES = ['new', 'hit', 'vegan', 'spicy', 'promo'] as const;
@@ -162,6 +165,15 @@ export const TEMPLATE_INFO: Record<TemplateId, { name: string; description: Reco
       ru: 'Новогодний: снегопад, гирлянда, золото на хвойном. Сезонное меню.',
       en: 'Festive: falling snow, string lights, gold on evergreen. Seasonal menus.',
       tr: 'Yılbaşı: kar yağışı, ışık zinciri, yeşil üstüne altın. Sezon menüsü.',
+    },
+    suits: ['coffee', 'cafe', 'restaurant', 'bar'],
+  },
+  winter: {
+    name: 'Winter Night',
+    description: {
+      ru: 'Новогодний в синем: снегопад, гирлянда, золото на ночном синем.',
+      en: 'Festive in blue: falling snow, string lights, gold on midnight blue.',
+      tr: 'Mavi yılbaşı: kar yağışı, ışık zinciri, gece mavisi üstüne altın.',
     },
     suits: ['coffee', 'cafe', 'restaurant', 'bar'],
   },
