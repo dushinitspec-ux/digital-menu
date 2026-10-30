@@ -912,7 +912,8 @@ fieldset {
 }
 .tpl-swatch-winter .scene-swatch,
 .tpl-card.tpl-swatch-winter {
-  background-color: #0d2443;
+  background-color: #0b2240;
+  color: #cfe7ff;
 }
 .editor {
   display: grid;

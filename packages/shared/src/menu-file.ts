@@ -28,6 +28,8 @@ const menuItemSchema = z.object({
   variants: z.record(name(20), majorPrice).default({}),
   /** Своя цена в отдельных точках: { "merkez": 465 }. Ключи — key из locations. */
   locationPrices: z.record(key, majorPrice).default({}),
+  /** Точки, где позиции нет: там она в стоп-листе (сцены с soldOutMode "hide" её не показывают). */
+  unavailableAt: z.array(key).max(100).default([]),
   badges: z.array(z.enum(BADGES)).max(3).default([]),
   soldOut: z.boolean().default(false),
   /** Фото позиции: путь относительно файла меню. */
@@ -67,10 +69,10 @@ export const menuFileSchema = z
       .max(100),
     categories: z.array(menuCategorySchema).min(1).max(60),
     scenes: z.array(menuSceneSchema).min(1).max(30),
-    /** Промо-ролик: слайды с позициями featured и финальное поздравление. */
+    /** Промо-ролик: слайды с позициями featured и финальный слайд (поздравление или название сети). */
     showcase: z
       .object({
-        template: z.enum(['newyear', 'winter']).default('newyear'),
+        template: z.enum(['newyear', 'winter']).default('winter'),
         kicker: text(60),
         slideSec: z.number().min(3).max(20).default(6),
         closingTitle: text(60),
@@ -95,7 +97,7 @@ export const menuFileSchema = z
         if (item.price === null && labels.length === 0) {
           ctx.addIssue({ code: 'custom', path: ['categories', i, 'items', j], message: `"${item.name}" has neither price nor variants` });
         }
-        for (const loc of Object.keys(item.locationPrices)) {
+        for (const loc of [...Object.keys(item.locationPrices), ...item.unavailableAt]) {
           if (!locationKeys.has(loc)) {
             ctx.addIssue({ code: 'custom', path: ['categories', i, 'items', j, 'locationPrices'], message: `Unknown location "${loc}" for "${item.name}"` });
           }
@@ -144,7 +146,7 @@ export function menuFileScenes(menu: MenuFile, resolveImage: (path: string) => s
         variants: menuItemVariants(item, c.variantLabels),
         badges: item.badges,
         image: url ? { id: `${c.key}-${i}-img`, kind: 'image', url, thumbUrl: url, width: null, height: null } : null,
-        soldOut: item.soldOut,
+        soldOut: item.soldOut || (location !== undefined && item.unavailableAt.includes(location)),
       };
     });
     categories.set(c.key, { id: c.key, name: c.name, nameSecondary: c.nameSecondary, compliance: 'none', variantLabels: c.variantLabels, items });

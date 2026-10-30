@@ -33,7 +33,7 @@ const menuFile = (over: Record<string, unknown> = {}) =>
         items: [
           // Порядок ключей нарочно не совпадает с колонками.
           { name: 'Latte', variants: { L: 170, S: 130, M: 150 }, badges: ['hit'] },
-          { name: 'Türk Kahvesi', variants: { S: 100 } },
+          { name: 'Türk Kahvesi', variants: { S: 100 }, unavailableAt: ['kas'] },
         ],
       },
       {
@@ -121,6 +121,13 @@ describe('Turkey', () => {
       select o.price, l.name from item_location_overrides o join locations l on l.id = o.location_id where o.item_id = ${special!.id}`;
     expect(override).toEqual({ price: 17500, name: 'Kaş' });
     expect(menuFileScenes(menu, undefined, 'kas')[0]!.categories[0]!.items[0]!.price).toBe(17500);
+    // В Каше турецкого кофе нет — там он в стоп-листе.
+    const turkish = scene.categories[1]!.items[1]!;
+    expect(turkish).toMatchObject({ name: 'Türk Kahvesi', soldOut: false });
+    const [stop] = await env.sql<{ soldOut: boolean; price: number | null }[]>`
+      select sold_out, price from item_location_overrides where item_id = ${turkish.id}`;
+    expect(stop).toEqual({ soldOut: true, price: null });
+    expect(menuFileScenes(menu, undefined, 'kas')[0]!.categories[1]!.items[1]!.soldOut).toBe(true);
     expect(scene.categories[1]!.items[0]!.variants).toEqual([
       { label: 'S', price: 13000 },
       { label: 'M', price: 15000 },

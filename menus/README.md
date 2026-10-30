@@ -3,6 +3,10 @@
 Меню сети целиком в одном файле `menus/<сеть>/menu.json`, фото позиций лежат рядом.
 Формат описан и проверяется схемой `menuFileSchema` в `packages/shared/src/menu-file.ts`.
 Цены пишутся в обычных единицах: `185` — это 185 ₺. Цены по размерам задаются как `{ "S": 160, "M": 185 }`.
+У точек есть `key`. Своя цена точки задаётся в `locationPrices` (`{ "fethiye": 280 }`), позиции, которой в точке нет,
+ставится `unavailableAt` (`["merkez"]`). В сценах с `soldOutMode: "hide"` такая позиция на экранах этой точки не показывается.
+
+- `understone/` — зимнее меню сети Understone (Merkez и Fethiye). Решения и вопросы к клиенту — в `understone/NOTES.md`.
 
 `demo/newyear-coffee.json` — демо-меню с примерными ценами для проверки шаблона и роликов. Это не меню клиента.
 
@@ -27,4 +31,4 @@ OWNER_PASSWORD='…' pnpm --filter @dm/api import-menu -- ../../menus/<сеть>
 pnpm --filter @dm/video render -- ../../menus/<сеть>/menu.json --orientation both
 ```
 
-Готовые ролики появляются в `apps/video/output/`. Флаг `--list` показывает доступные ролики, `--only showcase` снимает только выбранные.
+Готовые ролики появляются в `apps/video/output/`. Флаг `--list` показывает доступные ролики, `--only showcase` снимает только выбранные, `--location <key>` подставляет цены точки.

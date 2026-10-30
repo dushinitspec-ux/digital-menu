@@ -123,10 +123,13 @@ export async function importMenu(sql: Db, storage: Storage, menu: MenuFile, opts
                     ${item.price}, ${tx.json(menuItemVariants(item, c.variantLabels) as never)}, ${item.badges}::text[],
                     ${imageId}, ${item.soldOut}, ${ii})
             returning id`;
-          // Цены отдельных точек — тем же механизмом, что и правка цены точки в панели.
-          for (const [loc, price] of Object.entries(item.locationPrices)) {
-            await tx`insert into item_location_overrides (item_id, location_id, price)
-                     values (${itemRow!.id}, ${locationIds.get(loc)!}, ${price})`;
+          // Цены и стоп-лист отдельных точек — тем же механизмом, что и правки точки в панели.
+          const overrides = new Map<string, { price: number | null; soldOut: boolean | null }>();
+          for (const [loc, price] of Object.entries(item.locationPrices)) overrides.set(loc, { price, soldOut: null });
+          for (const loc of item.unavailableAt) overrides.set(loc, { price: overrides.get(loc)?.price ?? null, soldOut: true });
+          for (const [loc, o] of overrides) {
+            await tx`insert into item_location_overrides (item_id, location_id, price, sold_out)
+                     values (${itemRow!.id}, ${locationIds.get(loc)!}, ${o.price}, ${o.soldOut})`;
           }
           items++;
         }

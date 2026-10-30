@@ -702,11 +702,11 @@
   color: var(--muted);
 }
 
-/* ===================== Новогодние шаблоны: снег, гирлянда, золото ===================== */
-/* newyear — золото на хвойном, winter — золото на ночном синем. Вёрстка общая (.dm-festive), разные только цвета.
-   Снег, гирлянду, шары и блёстки строит decor.ts; здесь — их вид и анимации. */
+/* ===================== Снежные шаблоны: новогодний и зимний ===================== */
+/* newyear — золото на хвойном, гирлянда и шары; winter — морозно-синий, сосульки, иней и сугроб.
+   Вёрстка общая (.dm-snowy), разные только цвета. Снег и оформление строит decor.ts; здесь — вид и анимации. */
 
-.dm-festive {
+.dm-snowy {
   --fg: #fbf6ea;
   --accent: #ecc66f;
   --accent-rgb: 236, 198, 111;
@@ -714,7 +714,9 @@
   --berry-rgb: 224, 82, 79;
   --price: #fff2d2;
   --subtitle: #eadbb6;
-  --gold-text: linear-gradient(180deg, #fff6d9 0%, #f0cd78 52%, #c39237 100%);
+  --title-text: linear-gradient(180deg, #fff6d9 0%, #f0cd78 52%, #c39237 100%);
+  --star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.8 6.4 5.6 11.2 12 12-6.4.8-11.2 5.6-12 12-.8-6.4-5.6-11.2-12-12C6.4 11.2 11.2 6.4 12 0z'/%3E%3C/svg%3E");
+  --flake: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M12 1.5v21M2.9 6.75l18.2 10.5M2.9 17.25l18.2-10.5M12 1.5 9.6 3.9M12 1.5l2.4 2.4M12 22.5l-2.4-2.4M12 22.5l2.4-2.4M2.9 6.75l3.3.9M2.9 6.75l.9-3.3M21.1 17.25l-3.3-.9M21.1 17.25l-.9 3.3M2.9 17.25l.9 3.3M2.9 17.25l3.3-.9M21.1 6.75l-.9-3.3M21.1 6.75l-3.3.9'/%3E%3C/svg%3E");
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Manrope', Arial, sans-serif;
   --pad-x: 92px;
@@ -724,7 +726,7 @@
   /* Сверху висит гирлянда — опускаем заголовок под неё. */
   padding-top: 116px;
 }
-.dm-festive {
+.dm-snowy {
   --bg: #0b2a21;
   --muted: #b9cabe;
   --panel: rgba(5, 24, 17, 0.66);
@@ -735,34 +737,48 @@
   --glow-right: rgba(var(--accent-rgb), 0.18);
 }
 .dm-tpl-winter {
-  --bg: #0d2443;
-  --muted: #b6c6dc;
-  --panel: rgba(6, 17, 36, 0.66);
+  --bg: #0b2240;
+  --muted: #b3c7dd;
+  --accent: #cfe7ff;
+  --accent-rgb: 207, 231, 255;
+  --berry: #ff9a8f;
+  --price: #ffffff;
+  --subtitle: #d5e6f8;
+  --title-text: linear-gradient(180deg, #ffffff 0%, #e2f1ff 48%, #9fc8ee 100%);
+  --panel: rgba(5, 16, 34, 0.64);
   --shade: rgba(3, 9, 22, 0.85);
   --dim: #050f22;
-  --on-accent: #0d2443;
-  --glow-left: rgba(120, 170, 255, 0.22);
-  --glow-right: rgba(var(--accent-rgb), 0.18);
+  --on-accent: #0b2240;
+  --glow-left: rgba(120, 175, 255, 0.24);
+  --glow-right: rgba(190, 225, 255, 0.14);
 }
-.dm-festive .dm-deco {
+/* Иней по углам, как на замёрзшем окне. */
+.dm-snowy.dm-tpl-winter .dm-deco {
+  background: radial-gradient(circle at 0 0, rgba(225, 242, 255, 0.2) 0%, rgba(225, 242, 255, 0) 26%),
+    radial-gradient(circle at 100% 0, rgba(225, 242, 255, 0.18) 0%, rgba(225, 242, 255, 0) 24%),
+    radial-gradient(ellipse at 50% -18%, rgba(var(--accent-rgb), 0.18) 0%, rgba(var(--accent-rgb), 0) 52%),
+    radial-gradient(ellipse at 50% 125%, var(--shade) 0%, transparent 62%);
+}
+
+.dm-snowy .dm-deco {
   background: radial-gradient(ellipse at 50% -18%, rgba(var(--accent-rgb), 0.22) 0%, rgba(var(--accent-rgb), 0) 52%),
     radial-gradient(ellipse at 50% 125%, var(--shade) 0%, transparent 62%);
 }
-.dm-festive .dm-deco::before,
-.dm-festive .dm-deco::after {
+.dm-snowy .dm-deco::before,
+.dm-snowy .dm-deco::after {
   content: '';
   position: absolute;
   border-radius: 50%;
   animation: dm-float 20s ease-in-out infinite alternate;
 }
-.dm-festive .dm-deco::before {
+.dm-snowy .dm-deco::before {
   left: -220px;
   bottom: -260px;
   width: 760px;
   height: 760px;
   background: radial-gradient(circle, var(--glow-left) 0%, transparent 64%);
 }
-.dm-festive .dm-deco::after {
+.dm-snowy .dm-deco::after {
   right: -200px;
   bottom: -240px;
   width: 700px;
@@ -771,7 +787,7 @@
   animation-duration: 26s;
   animation-direction: alternate-reverse;
 }
-.dm-festive .dm-bg-dim {
+.dm-snowy .dm-bg-dim {
   background: var(--dim);
 }
 
@@ -930,30 +946,73 @@
 .dm-sparkle {
   position: absolute;
   opacity: 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe6a1' d='M12 0c.8 6.4 5.6 11.2 12 12-6.4.8-11.2 5.6-12 12-.8-6.4-5.6-11.2-12-12C6.4 11.2 11.2 6.4 12 0z'/%3E%3C/svg%3E")
-    center / contain no-repeat;
+  background: var(--sparkle, #ffe6a1);
+  -webkit-mask: var(--star) center / contain no-repeat;
+  mask: var(--star) center / contain no-repeat;
+  animation: dm-sparkle 4s ease-in-out infinite;
+}
+
+/* Сосульки, сугроб и блики зимнего шаблона */
+.dm-icicles {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+.dm-icicles-svg,
+.dm-drift-svg {
+  position: absolute;
+  left: 0;
+  overflow: visible;
+}
+.dm-icicles-svg {
+  top: 0;
+}
+.dm-drift {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 120px;
+  z-index: 0;
+  pointer-events: none;
+}
+.dm-drift-svg {
+  bottom: 0;
+}
+.dm-glint {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  opacity: 0;
+  background: #fff;
+  -webkit-mask: var(--star) center / contain no-repeat;
+  mask: var(--star) center / contain no-repeat;
   animation: dm-sparkle 4s ease-in-out infinite;
 }
 
 /* Заголовок */
-.dm-festive .dm-head {
+.dm-snowy .dm-head {
   text-align: center;
-  margin-bottom: 34px;
+  margin-bottom: 28px;
 }
-.dm-festive .dm-title {
+.dm-snowy .dm-title {
   display: inline-block;
   padding: 0 14px 6px;
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 500;
-  font-size: 98px;
+  font-size: 88px;
   line-height: 1.02;
-  background: var(--gold-text);
+  background: var(--title-text);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.dm-festive .dm-rule {
+.dm-snowy .dm-rule {
   position: relative;
   width: 440px;
   height: 1px;
@@ -968,7 +1027,7 @@
     rgba(var(--accent-rgb), 0) 100%
   );
 }
-.dm-festive .dm-rule::after {
+.dm-snowy .dm-rule::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -976,10 +1035,11 @@
   width: 22px;
   height: 22px;
   margin-left: -11px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ecc66f' d='M12 0c.8 6.4 5.6 11.2 12 12-6.4.8-11.2 5.6-12 12-.8-6.4-5.6-11.2-12-12C6.4 11.2 11.2 6.4 12 0z'/%3E%3C/svg%3E")
-    center / contain no-repeat;
+  background: var(--accent);
+  -webkit-mask: var(--star) center / contain no-repeat;
+  mask: var(--star) center / contain no-repeat;
 }
-.dm-festive .dm-subtitle {
+.dm-snowy .dm-subtitle {
   margin-top: 20px;
   font-size: 18px;
   font-weight: 600;
@@ -989,25 +1049,25 @@
 }
 
 /* Категории — тёмные «стёкла», чтобы снег не мешал читать цены. */
-.dm-festive .dm-cat {
+.dm-snowy .dm-cat {
   padding: 24px 30px 6px;
   border-radius: 24px;
   background: var(--panel);
   border: 1px solid rgba(var(--accent-rgb), 0.28);
 }
-.dm-festive .dm-cat-head {
+.dm-snowy .dm-cat-head {
   margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px dashed rgba(var(--accent-rgb), 0.32);
 }
-.dm-festive .dm-cat-name {
+.dm-snowy .dm-cat-name {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 40px;
   line-height: 1.08;
   color: var(--accent);
 }
-.dm-festive .dm-cat-name::before {
+.dm-snowy .dm-cat-name::before {
   content: '';
   display: inline-block;
   width: 30px;
@@ -1016,38 +1076,43 @@
   vertical-align: middle;
   position: relative;
   top: -4px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecc66f' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M12 1.5v21M2.9 6.75l18.2 10.5M2.9 17.25l18.2-10.5M12 1.5 9.6 3.9M12 1.5l2.4 2.4M12 22.5l-2.4-2.4M12 22.5l2.4-2.4M2.9 6.75l3.3.9M2.9 6.75l.9-3.3M21.1 17.25l-3.3-.9M21.1 17.25l-.9 3.3M2.9 17.25l.9 3.3M2.9 17.25l3.3-.9M21.1 6.75l-.9-3.3M21.1 6.75l-3.3.9'/%3E%3C/svg%3E")
-    center / contain no-repeat;
+  background: var(--accent);
+  -webkit-mask: var(--flake) center / contain no-repeat;
+  mask: var(--flake) center / contain no-repeat;
 }
-.dm-festive .dm-cat-labels {
+.dm-snowy .dm-cat-labels {
   font-size: 15px;
   font-weight: 800;
   letter-spacing: 0.2em;
   color: var(--muted);
   padding-bottom: 6px;
 }
-.dm-festive .dm-item {
-  margin-bottom: 18px;
+.dm-snowy .dm-item {
+  margin-bottom: 13px;
 }
-.dm-festive .dm-item-img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  margin-right: 20px;
-  border: 2px solid rgba(var(--accent-rgb), 0.55);
+.dm-snowy .dm-item.has-img {
+  margin-bottom: 16px;
 }
-.dm-festive .dm-item-name {
+/* Фото целиком, без кружка: вырезанная тарелка «лежит» на панели, обычное фото — со скруглёнными углами. */
+.dm-snowy .dm-item-img {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+  border-radius: 14px;
+  margin-right: 18px;
+}
+.dm-snowy .dm-item-name {
   font-size: 26px;
   font-weight: 600;
 }
-.dm-festive .dm-leader {
+.dm-snowy .dm-leader {
   margin: 0 12px;
   border-bottom: 2px dotted rgba(var(--accent-rgb), 0.3);
   position: relative;
   top: -7px;
 }
-.dm-festive .dm-item-price,
-.dm-festive .dm-item-prices {
+.dm-snowy .dm-item-price,
+.dm-snowy .dm-item-prices {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 32px;
@@ -1055,23 +1120,23 @@
   color: var(--price);
 }
 /* Колонки размеров: три цены в ряд должны оставлять место названию. */
-.dm-festive .dm-item-prices {
+.dm-snowy .dm-item-prices {
   font-size: 27px;
 }
-.dm-festive .dm-item-sub {
+.dm-snowy .dm-item-sub {
   font-family: var(--font-display);
   font-style: italic;
   font-size: 21px;
   color: var(--muted);
   margin-top: 2px;
 }
-.dm-festive .dm-item-desc {
+.dm-snowy .dm-item-desc {
   font-size: 18px;
   line-height: 1.35;
   color: var(--muted);
   margin-top: 4px;
 }
-.dm-festive .dm-badge {
+.dm-snowy .dm-badge {
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -1081,26 +1146,26 @@
   padding: 5px 11px 4px;
   border-radius: 999px;
 }
-.dm-festive .dm-badge--new {
+.dm-snowy .dm-badge--new {
   color: var(--on-accent);
   background: var(--accent);
 }
-.dm-festive .dm-badge--hit {
+.dm-snowy .dm-badge--hit {
   color: var(--accent);
   background: transparent;
   border: 1px solid var(--accent);
   padding: 4px 10px 3px;
 }
-.dm-festive .dm-badge--vegan {
+.dm-snowy .dm-badge--vegan {
   background: #3d8c5c;
 }
-.dm-festive .dm-soldout {
+.dm-snowy .dm-soldout {
   color: var(--berry);
 }
-.dm-festive .dm-foot {
+.dm-snowy .dm-foot {
   color: var(--muted);
 }
-.dm-festive .dm-dots {
+.dm-snowy .dm-dots {
   color: var(--accent);
 }
 

@@ -1,0 +1,1137 @@
+{
+  "org": {
+    "name": "Understone",
+    "country": "TR",
+    "currency": "TRY",
+    "locale": "tr",
+    "businessType": "coffee"
+  },
+  "locations": [
+    {
+      "key": "merkez",
+      "name": "Understone Merkez",
+      "timezone": "Europe/Istanbul"
+    },
+    {
+      "key": "fethiye",
+      "name": "Understone Fethiye",
+      "timezone": "Europe/Istanbul"
+    }
+  ],
+  "categories": [
+    {
+      "key": "kis",
+      "name": "Special Winter",
+      "nameSecondary": "Kış lezzetleri",
+      "items": [
+        {
+          "name": "Klasik Salep",
+          "price": 220,
+          "locationPrices": {
+            "fethiye": 280
+          },
+          "featured": true
+        },
+        {
+          "name": "Kakule Karanfil Salep",
+          "price": 235,
+          "locationPrices": {
+            "fethiye": 310
+          },
+          "featured": true
+        },
+        {
+          "name": "Bal Badem Salep",
+          "price": 235,
+          "locationPrices": {
+            "fethiye": 310
+          },
+          "featured": true
+        },
+        {
+          "name": "Sıcak Çikolata",
+          "price": 230,
+          "locationPrices": {
+            "fethiye": 280
+          },
+          "featured": true
+        }
+      ]
+    },
+    {
+      "key": "sicak",
+      "name": "Sıcak Kahveler",
+      "nameSecondary": "Hot coffee",
+      "items": [
+        {
+          "name": "Espresso Macchiato",
+          "price": 150,
+          "locationPrices": {
+            "fethiye": 190
+          }
+        },
+        {
+          "name": "Caramel Macchiato",
+          "price": 250,
+          "locationPrices": {
+            "fethiye": 260
+          }
+        },
+        {
+          "name": "Double Espresso",
+          "price": 180,
+          "locationPrices": {
+            "fethiye": 240
+          }
+        },
+        {
+          "name": "Cafe Americano",
+          "price": 190
+        },
+        {
+          "name": "Filter Coffee",
+          "price": 180,
+          "locationPrices": {
+            "fethiye": 210
+          }
+        },
+        {
+          "name": "Matcha Latte",
+          "price": 290,
+          "locationPrices": {
+            "fethiye": 350
+          }
+        },
+        {
+          "name": "Flat White",
+          "price": 220,
+          "locationPrices": {
+            "fethiye": 240
+          }
+        },
+        {
+          "name": "Cafe Latte",
+          "price": 220,
+          "locationPrices": {
+            "fethiye": 240
+          }
+        },
+        {
+          "name": "Cappuccino",
+          "price": 220,
+          "locationPrices": {
+            "fethiye": 240
+          }
+        },
+        {
+          "name": "Espresso",
+          "price": 140,
+          "locationPrices": {
+            "fethiye": 190
+          }
+        },
+        {
+          "name": "Cortado",
+          "price": 220,
+          "locationPrices": {
+            "fethiye": 240
+          }
+        },
+        {
+          "name": "Chai Tea Latte",
+          "price": 250,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        }
+      ]
+    },
+    {
+      "key": "mocha",
+      "name": "Mocha & Matcha",
+      "items": [
+        {
+          "name": "White Chocolate Mocha",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        },
+        {
+          "name": "Salted Caramel Mocha",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        },
+        {
+          "name": "Cafe Mocha",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        },
+        {
+          "name": "Ice Strawberry Matcha",
+          "price": 335,
+          "locationPrices": {
+            "fethiye": 400
+          }
+        },
+        {
+          "name": "Iced Matcha Latte",
+          "price": 300,
+          "locationPrices": {
+            "fethiye": 350
+          }
+        },
+        {
+          "name": "Taro Patto",
+          "price": 300,
+          "locationPrices": {
+            "fethiye": 350
+          },
+          "description": "Taro’nun yumuşak dokusu, berry hibiscusun meyvemsi asiditesiyle buluşuyor.",
+          "featured": true,
+          "image": "photos/taro-patto.webp"
+        },
+        {
+          "name": "Zen Taro Matcha",
+          "price": 300,
+          "locationPrices": {
+            "fethiye": 350
+          },
+          "description": "Matcha’nın bitkisel derinliği, taro ve berry hibiscus ile katmanlı ve sakin bir profil sunar.",
+          "featured": true,
+          "image": "photos/zen-taro-matcha.webp"
+        },
+        {
+          "name": "Coffee Lotus Crush",
+          "price": 300,
+          "locationPrices": {
+            "fethiye": 350
+          },
+          "featured": true,
+          "image": "photos/coffee-lotus-crush.webp"
+        },
+        {
+          "name": "Cafe Crème Brûlée",
+          "price": 300,
+          "locationPrices": {
+            "fethiye": 350
+          },
+          "featured": true,
+          "image": "photos/cafe-creme-brulee.webp"
+        }
+      ]
+    },
+    {
+      "key": "cay",
+      "name": "Tea & Herbal Tea",
+      "nameSecondary": "Çay ve Türk kahvesi",
+      "items": [
+        {
+          "name": "Bardak Çay",
+          "price": 65,
+          "locationPrices": {
+            "fethiye": 90
+          }
+        },
+        {
+          "name": "Fincan Çay",
+          "price": 130,
+          "locationPrices": {
+            "fethiye": 150
+          }
+        },
+        {
+          "name": "Yeşil Çay",
+          "price": 195,
+          "locationPrices": {
+            "fethiye": 240
+          }
+        },
+        {
+          "name": "Rooibos Relax",
+          "price": 195,
+          "locationPrices": {
+            "fethiye": 260
+          }
+        },
+        {
+          "name": "Kırmızı Orman Meyve Çayı",
+          "price": 195,
+          "locationPrices": {
+            "fethiye": 260
+          }
+        },
+        {
+          "name": "Portakal Vanilya",
+          "price": 195,
+          "locationPrices": {
+            "fethiye": 260
+          }
+        },
+        {
+          "name": "Limonotu Zencefil",
+          "price": 195,
+          "locationPrices": {
+            "fethiye": 260
+          }
+        },
+        {
+          "name": "Adaçayı",
+          "price": 195,
+          "locationPrices": {
+            "fethiye": 260
+          }
+        },
+        {
+          "name": "Türk Kahvesi",
+          "price": 140,
+          "locationPrices": {
+            "fethiye": 180
+          }
+        },
+        {
+          "name": "Double Türk Kahvesi",
+          "price": 180,
+          "locationPrices": {
+            "fethiye": 230
+          }
+        }
+      ]
+    },
+    {
+      "key": "soguk",
+      "name": "Soğuk Kahveler",
+      "nameSecondary": "Iced coffee",
+      "items": [
+        {
+          "name": "Iced White Mocha",
+          "price": 270
+        },
+        {
+          "name": "Iced Americano",
+          "price": 210,
+          "locationPrices": {
+            "fethiye": 190
+          }
+        },
+        {
+          "name": "Espresso Tonic",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        },
+        {
+          "name": "Iced Flat White",
+          "price": 270
+        },
+        {
+          "name": "Iced Latte",
+          "price": 230,
+          "locationPrices": {
+            "fethiye": 240
+          }
+        },
+        {
+          "name": "Cold Brew",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        },
+        {
+          "name": "Iced Filter",
+          "price": 210
+        },
+        {
+          "name": "Iced Mocha",
+          "price": 270
+        },
+        {
+          "name": "Iced Chai Tea Latte",
+          "price": 250,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        },
+        {
+          "name": "Ice Caramel Latte",
+          "price": 290,
+          "locationPrices": {
+            "fethiye": 260
+          }
+        }
+      ]
+    },
+    {
+      "key": "frappe",
+      "name": "Frappé",
+      "items": [
+        {
+          "name": "Çikolatalı",
+          "price": 280,
+          "unavailableAt": [
+            "fethiye"
+          ]
+        },
+        {
+          "name": "Vanilyalı",
+          "price": 280,
+          "unavailableAt": [
+            "fethiye"
+          ]
+        },
+        {
+          "name": "Karamelli",
+          "price": 280,
+          "unavailableAt": [
+            "fethiye"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "serinlik",
+      "name": "Understone Serinliği",
+      "nameSecondary": "Summer coolness",
+      "items": [
+        {
+          "name": "Wild Berry Acai",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 320
+          }
+        },
+        {
+          "name": "Golden Melon",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 320
+          }
+        },
+        {
+          "name": "Kuzu Kulağı Papaz Erik",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 320
+          }
+        },
+        {
+          "name": "Watermelon Sour Fizz",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 320
+          }
+        },
+        {
+          "name": "Rooibos Peach",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 320
+          }
+        }
+      ]
+    },
+    {
+      "key": "detox",
+      "name": "Special & Detox",
+      "items": [
+        {
+          "name": "Bumblebee",
+          "price": 300,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        },
+        {
+          "name": "Mango Fesleğen",
+          "price": 300,
+          "locationPrices": {
+            "fethiye": 350
+          }
+        },
+        {
+          "name": "Green Fresh",
+          "price": 290,
+          "locationPrices": {
+            "fethiye": 310
+          }
+        },
+        {
+          "name": "Health Beet",
+          "price": 290,
+          "locationPrices": {
+            "fethiye": 310
+          }
+        }
+      ]
+    },
+    {
+      "key": "milkshake",
+      "name": "Milkshake & Frozen",
+      "items": [
+        {
+          "name": "Çikolatalı Milkshake",
+          "price": 265,
+          "locationPrices": {
+            "fethiye": 280
+          }
+        },
+        {
+          "name": "Vanilya Milkshake",
+          "price": 265,
+          "locationPrices": {
+            "fethiye": 280
+          }
+        },
+        {
+          "name": "Çilekli Milkshake",
+          "price": 265,
+          "locationPrices": {
+            "fethiye": 280
+          }
+        },
+        {
+          "name": "Strawberry Frozen",
+          "price": 280
+        },
+        {
+          "name": "Forest Berries Frozen",
+          "price": 280
+        },
+        {
+          "name": "Mango Frozen",
+          "price": 280
+        }
+      ]
+    },
+    {
+      "key": "vitamin",
+      "name": "Vitamin Bar",
+      "nameSecondary": "Taze sıkım",
+      "items": [
+        {
+          "name": "Taze Elma Suyu",
+          "price": 280,
+          "locationPrices": {
+            "fethiye": 310
+          }
+        },
+        {
+          "name": "Taze Havuç Suyu",
+          "price": 280,
+          "locationPrices": {
+            "fethiye": 330
+          }
+        },
+        {
+          "name": "Taze Portakal Suyu",
+          "price": 240,
+          "locationPrices": {
+            "fethiye": 290
+          }
+        },
+        {
+          "name": "Portakal, Elma, Havuç",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 350
+          }
+        },
+        {
+          "name": "Vitamin C",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 350
+          }
+        },
+        {
+          "name": "Limonata",
+          "price": 210,
+          "locationPrices": {
+            "fethiye": 250
+          }
+        },
+        {
+          "name": "Naneli Limonata",
+          "price": 230,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        },
+        {
+          "name": "Çilekli Limonata",
+          "price": 230,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        },
+        {
+          "name": "Cool Lime",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        },
+        {
+          "name": "Cool Berry",
+          "price": 275,
+          "locationPrices": {
+            "fethiye": 270
+          }
+        }
+      ]
+    },
+    {
+      "key": "mesrubat",
+      "name": "Meşrubatlar",
+      "nameSecondary": "Soft drinks",
+      "items": [
+        {
+          "name": "Churchill",
+          "price": 160,
+          "locationPrices": {
+            "fethiye": 220
+          }
+        },
+        {
+          "name": "Uludağ Premium",
+          "price": 120,
+          "locationPrices": {
+            "fethiye": 180
+          }
+        },
+        {
+          "name": "Su",
+          "price": 60,
+          "locationPrices": {
+            "fethiye": 90
+          }
+        },
+        {
+          "name": "Soda",
+          "price": 100,
+          "locationPrices": {
+            "fethiye": 120
+          }
+        },
+        {
+          "name": "Coca Cola",
+          "price": 145,
+          "locationPrices": {
+            "fethiye": 180
+          }
+        },
+        {
+          "name": "Fanta",
+          "price": 145,
+          "locationPrices": {
+            "fethiye": 180
+          }
+        },
+        {
+          "name": "Sprite",
+          "price": 145,
+          "locationPrices": {
+            "fethiye": 180
+          }
+        },
+        {
+          "name": "Uludağ Tonic",
+          "price": 145,
+          "locationPrices": {
+            "fethiye": 180
+          }
+        },
+        {
+          "name": "Redbull",
+          "price": 190,
+          "locationPrices": {
+            "fethiye": 250
+          }
+        }
+      ]
+    },
+    {
+      "key": "kahvalti",
+      "name": "Kahvaltı",
+      "nameSecondary": "Breakfast",
+      "items": [
+        {
+          "name": "İki Kişilik Sini Kahvaltı",
+          "price": 1590,
+          "unavailableAt": [
+            "merkez"
+          ],
+          "image": "photos/iki-kisilik-sini-kahvalti.webp",
+          "featured": true
+        },
+        {
+          "name": "Mini Serpme Kahvaltı",
+          "price": 1150,
+          "unavailableAt": [
+            "fethiye"
+          ],
+          "image": "photos/mini-serpme-kahvalti.webp",
+          "featured": true
+        },
+        {
+          "name": "Granola Bowl",
+          "description": "Süzme Yoğurt, Granola, Muz & Orman Meyveleri, Bal",
+          "price": 475,
+          "locationPrices": {
+            "fethiye": 540
+          },
+          "image": "photos/granola-bowl.webp"
+        },
+        {
+          "name": "Avokado Cheddarlı Omlet",
+          "description": "Yumurta, Cheddar Peynir, Avokado Püre, Mix Salata",
+          "price": 465,
+          "locationPrices": {
+            "fethiye": 560
+          },
+          "image": "photos/avokado-chedarli-omlet.webp"
+        },
+        {
+          "name": "Mantar Kaşarlı Omlet",
+          "description": "Yumurta, Mantar, Kaşar Peyniri, Mix Salata",
+          "price": 395,
+          "locationPrices": {
+            "fethiye": 520
+          },
+          "image": "photos/mantar-kasarli-omlet.webp"
+        },
+        {
+          "name": "Sıcak Kahvaltı Tabağı",
+          "description": "Mantar, Bratwurst Sosis, Avokado, Göz Yumurta, Baby Patates, Cevizli Tost Ekmeği",
+          "price": 595,
+          "locationPrices": {
+            "fethiye": 690
+          },
+          "image": "photos/sicak-kahvalti-tabagi.webp"
+        },
+        {
+          "name": "Egg Florentino",
+          "description": "Cevizli Tost Ekmeği, Labne Peynir, Ispanak, Kapya, Mantar, Hollandez Sos, Poşe Yumurta",
+          "price": 445,
+          "locationPrices": {
+            "fethiye": 620
+          },
+          "image": "photos/egg-florentino.webp"
+        },
+        {
+          "name": "Çılbır Kıymalı",
+          "description": "Pişi Hamuru, Poşe Yumurta, Ispanak & Mantar, Süzme Yoğurt, Dana Kıyma, Soğan Turşusu, Acı & Yeşil Yağ",
+          "price": 425,
+          "locationPrices": {
+            "fethiye": 630
+          },
+          "image": "photos/cilbir-kiymali.webp"
+        },
+        {
+          "name": "Çılbır Sebzeli",
+          "description": "Pişi Hamuru, Poşe Yumurta, Ispanak & Mantar, Süzme Yoğurt, Soğan Turşusu, Acı & Yeşil Yağ",
+          "price": 395,
+          "locationPrices": {
+            "fethiye": 590
+          },
+          "image": "photos/cilbir-sebzeli.webp"
+        }
+      ]
+    },
+    {
+      "key": "kruvasan",
+      "name": "Kruvasanlar",
+      "nameSecondary": "Croissants",
+      "items": [
+        {
+          "name": "Bratwurst Kruvasan",
+          "description": "Labne Peynir, Scramble Yumurta, Bratwurst Sosis, Cheddar Peynir, Frenk Soğan",
+          "price": 595,
+          "locationPrices": {
+            "fethiye": 690
+          },
+          "image": "photos/bratwurts-kruvasan.webp"
+        },
+        {
+          "name": "Egg Florentin Kruvasan",
+          "description": "Labne, Ispanak, Kapya, Mantar, Yumurta, Hollandez Sos, Susam, Çörekotu",
+          "price": 475,
+          "locationPrices": {
+            "fethiye": 660
+          },
+          "image": "photos/egg-florentin-kruvasan.webp"
+        },
+        {
+          "name": "Scramble Kruvasan",
+          "description": "Labne Peynir, Scramble Yumurta, Avokado, Iceberg Marul, Frenk Soğan",
+          "price": 465,
+          "locationPrices": {
+            "fethiye": 660
+          },
+          "image": "photos/scramble-kruvasan.webp"
+        },
+        {
+          "name": "Hindi Füme Kruvasan",
+          "description": "Labne Peynir, Hindi Füme, Domates, Salatalık, Akdeniz Yeşillik, Kaşar Peyniri",
+          "price": 435,
+          "locationPrices": {
+            "fethiye": 660
+          },
+          "image": "photos/hindi-fume-kruvasan.webp"
+        },
+        {
+          "name": "Egg Benedict Kruvasan",
+          "description": "Avokado Püre, Füme Somon, Poşe Yumurta, Hollandez Sos, Baby Turp, Kapari, Yeşil Yağ, Frenk Soğan",
+          "price": 445,
+          "locationPrices": {
+            "fethiye": 680
+          },
+          "image": "photos/egg-benedict-kruvasan.webp"
+        },
+        {
+          "name": "Akdeniz Kruvasan",
+          "description": "Labne Peynir, Domates, Salatalık, Akdeniz Yeşillik, Beyaz Peynir",
+          "price": 595,
+          "locationPrices": {
+            "fethiye": 650
+          },
+          "image": "photos/akdeniz-kruvasan.webp"
+        }
+      ]
+    },
+    {
+      "key": "tost",
+      "name": "Tost, Sandviç & Focaccia",
+      "nameSecondary": "Toasts & sandwiches",
+      "items": [
+        {
+          "name": "Pesto Tavuk Tost",
+          "description": "Cevizli Tost Ekmeği, Izgara Tavuk Göğsü, Pesto Sos, Kaşar Peyniri, Hoisin Sos, Salata Mix",
+          "price": 465,
+          "locationPrices": {
+            "fethiye": 690
+          },
+          "image": "photos/pesto-tavuk-tost.webp"
+        },
+        {
+          "name": "Healthy Tost",
+          "description": "Cevizli Tost Ekmeği, Kurutulmuş Domates, Pesto Sos, Beyaz Peynir",
+          "price": 415,
+          "locationPrices": {
+            "fethiye": 590
+          },
+          "image": "photos/healty-tost.webp"
+        },
+        {
+          "name": "Cheddar Hindi Füme Tost",
+          "description": "Cevizli Tost Ekmeği, Cheddar Peynir, Hindi Füme Dilimi, Salata Mix",
+          "price": 465,
+          "locationPrices": {
+            "fethiye": 690
+          },
+          "image": "photos/chedar-hindi-fume-tost.webp"
+        },
+        {
+          "name": "Pesto Mozzarella Focaccia",
+          "description": "Focaccia Ekmeği, Suda Mozzarella, Domates, Pesto Sos, Balzemik Glaze",
+          "price": 395,
+          "locationPrices": {
+            "fethiye": 640
+          },
+          "image": "photos/pesto-mozarella-foccaccia.webp"
+        },
+        {
+          "name": "Hindi Füme Focaccia",
+          "description": "Focaccia Ekmeği, Hindi Füme Dilimi, Labne Peynir, Roka, Kaşar Peynir, Domates, Salatalık, Pesto Sos",
+          "price": 395,
+          "locationPrices": {
+            "fethiye": 640
+          },
+          "image": "photos/hindi-fume-foccaccia.webp"
+        },
+        {
+          "name": "Trüflü Tavuk Sandviç",
+          "description": "Ciabatta Ekmek, Izgara Tavuk, Trüf Sos, Domates, Salatalık Turşu, Yeşillik",
+          "price": 445,
+          "locationPrices": {
+            "fethiye": 640
+          },
+          "image": "photos/truflu-tavuk-sandvic.webp"
+        },
+        {
+          "name": "Tiftik Et Sandviç",
+          "description": "Ciabatta Ekmek, Tiftik Et, Köz Kapya-Patlıcan, Mantar, Jalapeño Biber, Cheddar Peynir",
+          "price": 525,
+          "locationPrices": {
+            "fethiye": 720
+          },
+          "image": "photos/tiftik-et-sandvic.webp"
+        }
+      ]
+    },
+    {
+      "key": "burger",
+      "name": "Burger, Taco & Wrap",
+      "items": [
+        {
+          "name": "Tavuk Quesadilla",
+          "description": "Sote Tavuk & Biberler, Kaşık Patates, Sweet Chili Sos, Sarımsaklı Mayonez",
+          "price": 515,
+          "locationPrices": {
+            "fethiye": 690
+          },
+          "image": "photos/tavuk-quesadilla.webp"
+        },
+        {
+          "name": "Tavuk Wrap",
+          "description": "Panelenmiş Parmak Tavuk Parçaları & Kaşık Patates, Sweet Chili Sos, Sarımsaklı Mayonez",
+          "price": 515,
+          "locationPrices": {
+            "fethiye": 690
+          },
+          "image": "photos/tavuk-wrap.webp"
+        },
+        {
+          "name": "Tiftik Et Burger",
+          "description": "Tiftik Et, Köz Kapya & Patlıcan, Jalapeño Biber, Cheddar Peynir",
+          "price": 615,
+          "locationPrices": {
+            "fethiye": 770
+          },
+          "image": "photos/tiftik-et-burger.webp"
+        },
+        {
+          "name": "Crispy Chicken Burger",
+          "description": "Panelenmiş Tavuk, Coleslaw Salata, Soğan Turşusu, Kaşık Patates, Sweet Chili Sos, Sarımsaklı Mayonez",
+          "price": 515,
+          "locationPrices": {
+            "fethiye": 650
+          },
+          "image": "photos/crispy-chicken-burger.webp"
+        },
+        {
+          "name": "Under Smash Burger",
+          "description": "Köfte, Mantar, Cheddar Peynir, Füme Kaburga, Kaşık Patates, Sweet Chili Sos, Sarımsaklı Mayonez",
+          "price": 665,
+          "locationPrices": {
+            "fethiye": 790
+          },
+          "image": "photos/under-smash-burger.webp"
+        },
+        {
+          "name": "Tiftik Et Taco",
+          "description": "Tiftik Et, Köz Kapya-Patlıcan, Jalapeño Biber, Cheddar Peynir, Kaşık Patates, Sweet Chili Sos",
+          "price": 615,
+          "locationPrices": {
+            "fethiye": 720
+          },
+          "image": "photos/tiftik-et-taco.webp"
+        },
+        {
+          "name": "Tavuk Taco",
+          "description": "Jüliyen Tavuk ve Biberler, Jalapeño Biber, Cheddar Peynir, Kaşık Patates, Sweet Chili Sos",
+          "price": 485,
+          "locationPrices": {
+            "fethiye": 690
+          },
+          "image": "photos/tavuk-taco.webp"
+        }
+      ]
+    },
+    {
+      "key": "ana",
+      "name": "Ana Yemekler",
+      "nameSecondary": "Mains",
+      "items": [
+        {
+          "name": "Kaşık Patates",
+          "description": "Rende Parmesan Peynir, Sweet Chili Sos, Sarımsaklı Mayonez, Frenk Soğan",
+          "price": 285,
+          "locationPrices": {
+            "fethiye": 390
+          },
+          "image": "photos/kasik-patates.webp"
+        },
+        {
+          "name": "Çıtır Tavuk Parçaları",
+          "description": "Panelenmiş Parmak Tavuk Parçaları & Kaşık Patates, Sweet Chili Sos, Sarımsaklı Mayonez",
+          "price": 475,
+          "locationPrices": {
+            "fethiye": 570
+          },
+          "image": "photos/citir-tavuk-parcalari.webp"
+        },
+        {
+          "name": "Falafel Bowl",
+          "description": "Falafel, Salata Mix, Avokado, Soğan Turşusu, Tahin Sos, Limon Dilimi",
+          "price": 535,
+          "locationPrices": {
+            "fethiye": 620
+          },
+          "image": "photos/falafel-bowl.webp"
+        },
+        {
+          "name": "Klasik Schnitzel",
+          "description": "Panelenmiş Tavuk Göğüs, Kaşık Patates, Sweet Chili Sos",
+          "price": 535,
+          "locationPrices": {
+            "fethiye": 720
+          },
+          "image": "photos/klasik-schnitzel.webp"
+        },
+        {
+          "name": "Kremalı Mantarlı Schnitzel",
+          "description": "Panelenmiş Tavuk Göğüs, Krema-Mantar Sos, Kaşık Patates, Sweet Chili Sos",
+          "price": 575,
+          "locationPrices": {
+            "fethiye": 770
+          },
+          "image": "photos/kremali-mantarli-schnitzel.webp"
+        },
+        {
+          "name": "Sweet Chili Tavuk ve Noodle",
+          "description": "Çıtır Tavuk Parçaları, Acı-Tatlı Sos & Sebzeli Noodle",
+          "price": 575,
+          "locationPrices": {
+            "fethiye": 790
+          },
+          "image": "photos/sweet-chili-tavuk-ve-noodle.webp"
+        },
+        {
+          "name": "Balaban Köfte",
+          "description": "Çıtır Ekmek Parçaları, Süzme Yoğurt, Domates Sos, Izgara Köfte & Biber",
+          "price": 595,
+          "locationPrices": {
+            "fethiye": 790
+          },
+          "image": "photos/balaban-kofte.webp"
+        }
+      ]
+    },
+    {
+      "key": "kids",
+      "name": "Çocuk Menüsü",
+      "nameSecondary": "Kids",
+      "items": [
+        {
+          "name": "Kids Burger",
+          "description": "Mini Burger Ekmeği, Izgara Köfte & Kaşık Patates",
+          "price": 395,
+          "locationPrices": {
+            "fethiye": 570
+          },
+          "image": "photos/kids-burger.webp"
+        },
+        {
+          "name": "Kids Köfte",
+          "description": "Izgara Köfte & Kaşık Patates",
+          "price": 425,
+          "locationPrices": {
+            "fethiye": 590
+          },
+          "image": "photos/kids-kofte.webp"
+        }
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "key": "sicak",
+      "name": "Sıcak İçecekler",
+      "template": "winter",
+      "categories": [
+        "kis",
+        "sicak",
+        "mocha",
+        "cay"
+      ],
+      "settings": {
+        "soldOutMode": "hide",
+        "footerNote": "Understone Coffee",
+        "title": "Sıcak İçecekler",
+        "subtitle": "Kışın en sıcak hali",
+        "showImages": false
+      }
+    },
+    {
+      "key": "soguk",
+      "name": "Soğuk İçecekler",
+      "template": "winter",
+      "categories": [
+        "soguk",
+        "frappe",
+        "milkshake",
+        "detox"
+      ],
+      "settings": {
+        "soldOutMode": "hide",
+        "footerNote": "Understone Coffee",
+        "title": "Soğuk İçecekler",
+        "subtitle": "Iced coffee · Frappé · Milkshake",
+        "showImages": false
+      }
+    },
+    {
+      "key": "taze",
+      "name": "Vitamin Bar & Meşrubat",
+      "template": "winter",
+      "categories": [
+        "vitamin",
+        "serinlik",
+        "mesrubat"
+      ],
+      "settings": {
+        "soldOutMode": "hide",
+        "footerNote": "Understone Coffee",
+        "title": "Vitamin Bar",
+        "subtitle": "Taze sıkım · Serinlik · Meşrubat",
+        "showImages": false
+      }
+    },
+    {
+      "key": "kahvalti",
+      "name": "Kahvaltı & Kruvasan",
+      "template": "winter",
+      "categories": [
+        "kahvalti",
+        "kruvasan"
+      ],
+      "settings": {
+        "soldOutMode": "hide",
+        "footerNote": "Understone Coffee",
+        "title": "Kahvaltı",
+        "subtitle": "Food & Co.",
+        "columns": 2
+      }
+    },
+    {
+      "key": "food",
+      "name": "Food & Co.",
+      "template": "winter",
+      "categories": [
+        "tost",
+        "burger",
+        "ana",
+        "kids"
+      ],
+      "settings": {
+        "soldOutMode": "hide",
+        "footerNote": "Understone Coffee",
+        "title": "Food & Co.",
+        "subtitle": "Tost · Sandviç · Burger · Ana yemek",
+        "columns": 2
+      }
+    }
+  ],
+  "showcase": {
+    "template": "winter",
+    "slideSec": 6,
+    "closingSubtitle": "Coffee · Food & Co."
+  }
+}

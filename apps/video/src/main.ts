@@ -95,7 +95,7 @@ async function main() {
 
   if (input.job === 'showcase') {
     const show = createShowcase(app, slides, {
-      template: menu.showcase.template ?? 'newyear',
+      template: menu.showcase.template ?? 'winter',
       orientation: input.orientation,
       ...ctx,
       orgName: menu.org.name,

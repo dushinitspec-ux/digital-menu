@@ -1,7 +1,8 @@
-import { FESTIVE_TEMPLATES, type TemplateId } from '@dm/shared';
+import { SNOW_TEMPLATES, type TemplateId } from '@dm/shared';
 import { h } from './dom';
 
-// Оформление шаблонов, которое нельзя описать одним CSS: снегопад и гирлянда новогодних шаблонов.
+// Оформление шаблонов, которое нельзя описать одним CSS: снегопад для снежных шаблонов, гирлянда и шары
+// для новогоднего, сосульки и сугроб для зимнего.
 // Всё анимируется только через transform и opacity — это тянут и слабые ТВ-приставки.
 
 interface Size {
@@ -153,9 +154,99 @@ function sparkles(size: Size): HTMLElement {
   return wrap;
 }
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function svgEl(tag: string, attrs: Record<string, string>): SVGElement {
+  const node = document.createElementNS(SVG_NS, tag);
+  for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+  return node;
+}
+
+function gradient(id: string, stops: [string, string][]): SVGElement {
+  const g = svgEl('linearGradient', { id, x1: '0', y1: '0', x2: '0', y2: '1' });
+  for (const [offset, color] of stops) g.appendChild(svgEl('stop', { offset, 'stop-color': color }));
+  return g;
+}
+
+/**
+ * Сосульки вдоль верхнего края: снежная шапка волной и ледяные сосульки разной длины.
+ * Статичная картинка — блестят только искорки на кончиках самых длинных.
+ */
+function icicles(size: Size): HTMLElement {
+  const rand = random(1702);
+  const height = 96;
+  const svg = svgEl('svg', { class: 'dm-icicles-svg', width: String(size.w), height: String(height), viewBox: `0 0 ${size.w} ${height}` });
+  const defs = svgEl('defs', {});
+  defs.appendChild(gradient('dm-ice', [['0', 'rgba(255,255,255,0.95)'], ['0.45', 'rgba(214,236,255,0.7)'], ['1', 'rgba(190,225,255,0.12)']]));
+  svg.appendChild(defs);
+
+  const el = h('div', 'dm-icicles');
+  let ice = '';
+  const tips: { x: number; y: number }[] = [];
+  for (let x = 4; x < size.w - 8; ) {
+    const w = 9 + rand() * 13;
+    const long = rand() < 0.22;
+    const len = long ? 52 + rand() * 38 : 16 + rand() * 30;
+    const x1 = x + w;
+    const tip = x + w * (0.42 + rand() * 0.16);
+    ice += `M${r1(x)} 8 Q${r1(x + w * 0.3)} ${r1(len * 0.55)} ${r1(tip)} ${r1(len)} Q${r1(x1 - w * 0.3)} ${r1(len * 0.55)} ${r1(x1)} 8Z`;
+    if (long) tips.push({ x: tip, y: len });
+    x = x1 + rand() * 9;
+  }
+  svg.appendChild(svgEl('path', { d: ice, fill: 'url(#dm-ice)' }));
+
+  // Снежная шапка: полоса с мягкими «подушками» снизу.
+  let cap = `M0 0 L${size.w} 0 L${size.w} 10`;
+  for (let x = size.w; x > 0; ) {
+    const w = 40 + rand() * 50;
+    const next = Math.max(0, x - w);
+    cap += ` Q${r1((x + next) / 2)} ${r1(16 + rand() * 9)} ${r1(next)} 10`;
+    x = next;
+  }
+  svg.appendChild(svgEl('path', { d: `${cap}Z`, fill: 'rgba(255,255,255,0.92)' }));
+  el.appendChild(svg);
+
+  for (const t of tips) {
+    const glint = h('span', 'dm-glint');
+    glint.style.left = `${r1(t.x - 9)}px`;
+    glint.style.top = `${r1(t.y - 9)}px`;
+    glint.style.animationDuration = `${r1(3 + rand() * 3)}s`;
+    glint.style.animationDelay = `-${r1(rand() * 6)}s`;
+    el.appendChild(glint);
+  }
+  return el;
+}
+
+/** Сугроб вдоль нижнего края — едва заметный, чтобы не спорить с подписью внизу экрана. */
+function snowdrift(size: Size): HTMLElement {
+  const rand = random(512);
+  const height = 120;
+  const svg = svgEl('svg', { class: 'dm-drift-svg', width: String(size.w), height: String(height), viewBox: `0 0 ${size.w} ${height}` });
+  const defs = svgEl('defs', {});
+  defs.appendChild(gradient('dm-drift', [['0', 'rgba(235,245,255,0.26)'], ['1', 'rgba(235,245,255,0.08)']]));
+  svg.appendChild(defs);
+  for (const [base, amp, seedShift] of [[54, 34, 0], [80, 22, 1]] as const) {
+    let d = `M0 ${height} L0 ${base}`;
+    let x = 0;
+    while (x < size.w) {
+      const w = 220 + rand() * 260 + seedShift * 40;
+      const next = Math.min(size.w, x + w);
+      d += ` Q${r1((x + next) / 2)} ${r1(base - amp * (0.5 + rand() * 0.5))} ${r1(next)} ${base}`;
+      x = next;
+    }
+    svg.appendChild(svgEl('path', { d: `${d} L${size.w} ${height}Z`, fill: 'url(#dm-drift)' }));
+  }
+  const el = h('div', 'dm-drift');
+  el.appendChild(svg);
+  return el;
+}
+
 export function templateDecor(template: TemplateId, size: Size): HTMLElement[] {
-  if (!FESTIVE_TEMPLATES.includes(template)) return [];
-  const parts = [sparkles(size), snow(), garland(size), ...baubles(size)];
+  if (!SNOW_TEMPLATES.includes(template)) return [];
+  const parts =
+    template === 'newyear'
+      ? [sparkles(size), snow(), garland(size), ...baubles(size)]
+      : [snowdrift(size), snow(), icicles(size)]; // за полупрозрачными панелями блёстки выглядят пятнами — у зимнего их нет
   for (const p of parts) p.setAttribute('data-decor', '');
   return parts;
 }

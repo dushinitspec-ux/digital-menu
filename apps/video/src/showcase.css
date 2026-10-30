@@ -1,4 +1,4 @@
-/* Промо-ролик поверх новогоднего шаблона рендерера (.dm-festive): палитра и шрифты оттуда. */
+/* Промо-ролик поверх снежного шаблона рендерера (.dm-snowy): палитра, шрифты и иконки оттуда. */
 
 .sc-root {
   padding: 0;
@@ -82,9 +82,11 @@
   top: -420px;
   width: 840px;
   height: 840px;
+  --flake-thin: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='0.22' stroke-linecap='round'%3E%3Cpath d='M12 1.5v21M2.9 6.75l18.2 10.5M2.9 17.25l18.2-10.5M12 1.5 9.6 3.9M12 1.5l2.4 2.4M12 22.5l-2.4-2.4M12 22.5l2.4-2.4M2.9 6.75l3.3.9M2.9 6.75l.9-3.3M21.1 17.25l-3.3-.9M21.1 17.25l-.9 3.3M2.9 17.25l.9 3.3M2.9 17.25l3.3-.9M21.1 6.75l-.9-3.3M21.1 6.75l-3.3.9M12 6.5l-1.8 1.8M12 6.5l1.8 1.8M12 17.5l-1.8-1.8M12 17.5l1.8-1.8'/%3E%3C/svg%3E");
   opacity: 0.08;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecc66f' stroke-width='0.22' stroke-linecap='round'%3E%3Cpath d='M12 1.5v21M2.9 6.75l18.2 10.5M2.9 17.25l18.2-10.5M12 1.5 9.6 3.9M12 1.5l2.4 2.4M12 22.5l-2.4-2.4M12 22.5l2.4-2.4M2.9 6.75l3.3.9M2.9 6.75l.9-3.3M21.1 17.25l-3.3-.9M21.1 17.25l-.9 3.3M2.9 17.25l.9 3.3M2.9 17.25l3.3-.9M21.1 6.75l-.9-3.3M21.1 6.75l-3.3.9M12 6.5l-1.8 1.8M12 6.5l1.8 1.8M12 17.5l-1.8-1.8M12 17.5l1.8-1.8'/%3E%3C/svg%3E")
-    center / contain no-repeat;
+  background: var(--accent);
+  -webkit-mask: var(--flake-thin) center / contain no-repeat;
+  mask: var(--flake-thin) center / contain no-repeat;
   animation: sc-spin 90s linear infinite;
 }
 
@@ -102,7 +104,7 @@
   font-weight: 800;
   letter-spacing: 0.42em;
   text-transform: uppercase;
-  color: #f1dca6;
+  color: var(--subtitle);
 }
 .sc-kicker::before,
 .sc-kicker::after {
@@ -127,7 +129,7 @@
   font-weight: 500;
   font-size: 136px;
   line-height: 1.04;
-  background: var(--gold-text);
+  background: var(--title-text);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -198,7 +200,7 @@
   font-size: 150px;
   line-height: 1.05;
   padding: 0 12px 10px;
-  background: var(--gold-text);
+  background: var(--title-text);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -218,6 +220,24 @@
   color: var(--price);
   padding: 0 6px;
   text-shadow: 0 0 60px rgba(var(--accent-rgb), 0.45);
+}
+/* Зимний финал: вместо цифр года — название сети крупно. */
+.sc-brand {
+  margin-top: 18px;
+  padding: 0 12px 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 170px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--price);
+  text-shadow: 0 0 60px rgba(var(--accent-rgb), 0.45);
+}
+.is-active .sc-brand {
+  animation: sc-pop 1s 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.dm-portrait .sc-brand {
+  font-size: 120px;
 }
 .sc-closing-sub {
   margin-top: 30px;

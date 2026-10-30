@@ -2,8 +2,9 @@ import { templateDecor } from '@dm/renderer';
 import { formatPrice, type Currency, type Locale, type Orientation, type ShowcaseSlide } from '@dm/shared';
 import './showcase.css';
 
-// Промо-ролик: по слайду на позицию (крупно название, описание, цена) и финальное поздравление.
-// Оформление — новогоднего шаблона (newyear или winter): тот же снег, гирлянда и палитра, что и на экранах меню.
+// Промо-ролик: по слайду на позицию (крупно название, описание, цена) и финальный слайд.
+// Оформление — снежного шаблона: тот же снег, палитра и украшения, что и на экранах меню.
+// Новогодний финал — поздравление и цифры года, зимний — тёплая фраза и название сети.
 
 export interface ShowcaseOptions {
   template: 'newyear' | 'winter';
@@ -17,10 +18,17 @@ export interface ShowcaseOptions {
   slideSec: number;
 }
 
-const DEFAULTS: Record<Locale, { kicker: string; closing: string }> = {
-  tr: { kicker: 'Yılbaşına özel', closing: 'Mutlu Yıllar' },
-  en: { kicker: 'New Year special', closing: 'Happy New Year' },
-  ru: { kicker: 'Новогоднее предложение', closing: 'С Новым годом' },
+const DEFAULTS: Record<ShowcaseOptions['template'], Record<Locale, { kicker: string; closing: string }>> = {
+  newyear: {
+    tr: { kicker: 'Yılbaşına özel', closing: 'Mutlu Yıllar' },
+    en: { kicker: 'New Year special', closing: 'Happy New Year' },
+    ru: { kicker: 'Новогоднее предложение', closing: 'С Новым годом' },
+  },
+  winter: {
+    tr: { kicker: 'Kış lezzetleri', closing: 'Kışa sıcacık bir mola' },
+    en: { kicker: 'Winter flavours', closing: 'A warm break this winter' },
+    ru: { kicker: 'Зимнее меню', closing: 'Тёплая пауза этой зимой' },
+  },
 };
 
 const SIZE: Record<Orientation, { w: number; h: number }> = {
@@ -87,27 +95,32 @@ function itemSlide(slide: ShowcaseSlide, o: ShowcaseOptions, kicker: string): HT
 
 function closingSlide(o: ShowcaseOptions): HTMLElement {
   const root = el('div', 'sc-slide sc-closing');
-  root.appendChild(el('div', 'sc-closing-title', o.closingTitle || DEFAULTS[o.locale].closing));
-  const year = el('div', 'sc-year');
-  String(comingYear()).split('').forEach((d, i) => {
-    const digit = el('span', 'sc-digit', d);
-    digit.style.animationDelay = `${0.5 + i * 0.16}s`;
-    year.appendChild(digit);
-  });
-  root.appendChild(year);
-  root.appendChild(el('div', 'sc-closing-sub', o.closingSubtitle || o.orgName));
+  root.appendChild(el('div', 'sc-closing-title', o.closingTitle || DEFAULTS[o.template][o.locale].closing));
+  if (o.template === 'newyear') {
+    const year = el('div', 'sc-year');
+    String(comingYear()).split('').forEach((d, i) => {
+      const digit = el('span', 'sc-digit', d);
+      digit.style.animationDelay = `${0.5 + i * 0.16}s`;
+      year.appendChild(digit);
+    });
+    root.appendChild(year);
+    root.appendChild(el('div', 'sc-closing-sub', o.closingSubtitle || o.orgName));
+  } else {
+    root.appendChild(el('div', 'sc-brand', o.orgName));
+    if (o.closingSubtitle) root.appendChild(el('div', 'sc-closing-sub', o.closingSubtitle));
+  }
   return root;
 }
 
 export function createShowcase(container: HTMLElement, slides: ShowcaseSlide[], o: ShowcaseOptions): { durationMs: number } {
   const size = SIZE[o.orientation];
-  const scene = el('div', `dm-scene dm-tpl-${o.template} dm-festive dm-${o.orientation} is-shown sc-root`);
+  const scene = el('div', `dm-scene dm-tpl-${o.template} dm-snowy dm-${o.orientation} is-shown sc-root`);
   scene.style.width = `${size.w}px`;
   scene.style.height = `${size.h}px`;
   scene.appendChild(el('div', 'dm-deco'));
   for (const d of templateDecor(o.template, size)) scene.appendChild(d);
 
-  const kicker = o.kicker || DEFAULTS[o.locale].kicker;
+  const kicker = o.kicker || DEFAULTS[o.template][o.locale].kicker;
   const stage = el('div', 'sc-stage');
   const all = [...slides.map((s) => itemSlide(s, o, kicker)), closingSlide(o)];
   for (const s of all) stage.appendChild(s);

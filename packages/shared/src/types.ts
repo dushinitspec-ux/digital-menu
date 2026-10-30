@@ -9,8 +9,8 @@ export type BusinessType = 'coffee' | 'restaurant' | 'cafe' | 'bar' | 'hookah';
 
 export const TEMPLATE_IDS = ['noir', 'crema', 'neon', 'newyear', 'winter'] as const;
 
-/** Новогодние шаблоны: снег, гирлянда, общая вёрстка. */
-export const FESTIVE_TEMPLATES: readonly TemplateId[] = ['newyear', 'winter'];
+/** Снежные шаблоны с общей вёрсткой: новогодний (гирлянда, шары) и зимний (сосульки, иней). */
+export const SNOW_TEMPLATES: readonly TemplateId[] = ['newyear', 'winter'];
 export type TemplateId = (typeof TEMPLATE_IDS)[number];
 
 export const BADGES = ['new', 'hit', 'vegan', 'spicy', 'promo'] as const;
@@ -169,11 +169,11 @@ export const TEMPLATE_INFO: Record<TemplateId, { name: string; description: Reco
     suits: ['coffee', 'cafe', 'restaurant', 'bar'],
   },
   winter: {
-    name: 'Winter Night',
+    name: 'Winter',
     description: {
-      ru: 'Новогодний в синем: снегопад, гирлянда, золото на ночном синем.',
-      en: 'Festive in blue: falling snow, string lights, gold on midnight blue.',
-      tr: 'Mavi yılbaşı: kar yağışı, ışık zinciri, gece mavisi üstüne altın.',
+      ru: 'Зимний: снегопад, сосульки и иней на морозно-синем. Сезонное меню без праздника.',
+      en: 'Wintry: falling snow, icicles and frost on icy blue. Seasonal, not festive.',
+      tr: 'Kış: kar yağışı, buz sarkıtları ve kırağı, buz mavisi zemin. Sezon menüsü.',
     },
     suits: ['coffee', 'cafe', 'restaurant', 'bar'],
   },

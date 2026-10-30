@@ -145,7 +145,7 @@ export function SceneEditorPage() {
                   }}
                 >
                   <span className="tpl-name">{TEMPLATE_INFO[tpl].name}</span>
-                  <span className="tpl-desc">{TEMPLATE_INFO[tpl].description[org.locale]}</span>
+                  <span className="tpl-desc">{TEMPLATE_INFO[tpl].description[t.locale]}</span>
                 </button>
               ))}
             </div>
