@@ -17,7 +17,20 @@ const envSchema = z.object({
   LOG_LEVEL: z.string().default('info'),
   DATABASE_URL: z.string().min(1),
   REGION: z.enum(['ru', 'eu']),
-  PUBLIC_URL: z.url(),
+  /** На Railway можно не задавать: возьмём домен из RAILWAY_PUBLIC_DOMAIN. */
+  PUBLIC_URL: z.url().optional(),
+  RAILWAY_PUBLIC_DOMAIN: z.string().optional(),
+  /** closed — регистрироваться могут только приглашённые (аккаунты создаёт владелец сервиса). */
+  REGISTRATION: z.enum(['open', 'closed']).default('open'),
+  /** Аккаунт, который создаётся при первом запуске, например для первой сети с бесплатным доступом. */
+  BOOTSTRAP_ORG_NAME: z.string().optional(),
+  BOOTSTRAP_OWNER_EMAIL: z.string().optional(),
+  BOOTSTRAP_OWNER_PASSWORD: z.string().optional(),
+  BOOTSTRAP_OWNER_NAME: z.string().default('Владелец'),
+  BOOTSTRAP_BUSINESS_TYPE: z.enum(['coffee', 'restaurant', 'cafe', 'bar', 'hookah']).default('cafe'),
+  BOOTSTRAP_COUNTRY: z.string().default('RU'),
+  BOOTSTRAP_TIMEZONE: z.string().default('Europe/Moscow'),
+  BOOTSTRAP_PLAN: z.enum(['standard', 'complimentary']).default('complimentary'),
   OTHER_REGION_URL: z.url().optional(),
   BRAND_NAME: z.string().default('Digital Menu'),
   COOKIE_SECURE: bool,
@@ -44,6 +57,21 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     throw new Error(`Invalid environment:\n${z.prettifyError(parsed.error)}`);
   }
   const e = parsed.data;
+  // Без адреса сервис всё равно запускается (например, первый деплой на Railway до выдачи домена).
+  const publicUrl = e.PUBLIC_URL ?? (e.RAILWAY_PUBLIC_DOMAIN ? `https://${e.RAILWAY_PUBLIC_DOMAIN}` : `http://localhost:${e.PORT}`);
+  const bootstrap =
+    e.BOOTSTRAP_ORG_NAME && e.BOOTSTRAP_OWNER_EMAIL && e.BOOTSTRAP_OWNER_PASSWORD
+      ? {
+          orgName: e.BOOTSTRAP_ORG_NAME,
+          email: e.BOOTSTRAP_OWNER_EMAIL,
+          password: e.BOOTSTRAP_OWNER_PASSWORD,
+          name: e.BOOTSTRAP_OWNER_NAME,
+          businessType: e.BOOTSTRAP_BUSINESS_TYPE,
+          country: e.BOOTSTRAP_COUNTRY,
+          timezone: e.BOOTSTRAP_TIMEZONE,
+          plan: e.BOOTSTRAP_PLAN,
+        }
+      : null;
   if (e.STORAGE_DRIVER === 's3' && (!e.S3_BUCKET || !e.S3_ACCESS_KEY_ID || !e.S3_SECRET_ACCESS_KEY)) {
     throw new Error('STORAGE_DRIVER=s3 requires S3_BUCKET, S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY');
   }
@@ -54,10 +82,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     logLevel: e.LOG_LEVEL,
     databaseUrl: e.DATABASE_URL,
     region: e.REGION,
-    publicUrl: e.PUBLIC_URL.replace(/\/$/, ''),
+    publicUrl: publicUrl.replace(/\/$/, ''),
     otherRegionUrl: e.OTHER_REGION_URL?.replace(/\/$/, '') ?? null,
     brandName: e.BRAND_NAME,
-    cookieSecure: e.COOKIE_SECURE ?? e.PUBLIC_URL.startsWith('https://'),
+    cookieSecure: e.COOKIE_SECURE ?? publicUrl.startsWith('https://'),
+    registrationOpen: e.REGISTRATION === 'open',
+    bootstrap,
     storage: {
       driver: e.STORAGE_DRIVER,
       dir: e.STORAGE_DIR,

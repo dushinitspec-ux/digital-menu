@@ -8,7 +8,7 @@ import { Realtime } from '../src/realtime';
 
 export const TEST_DB = process.env.DATABASE_URL_TEST ?? 'postgres://dm:dm@127.0.0.1:5432/digital_menu_test';
 
-export async function setupApp(region: 'ru' | 'eu' = 'ru') {
+export async function setupApp(region: 'ru' | 'eu' = 'ru', extraEnv: Record<string, string> = {}) {
   const storageDir = await mkdtemp(path.join(tmpdir(), 'dm-storage-'));
   const config = loadConfig({
     DATABASE_URL: TEST_DB,
@@ -20,6 +20,7 @@ export async function setupApp(region: 'ru' | 'eu' = 'ru') {
     PLAYER_DIST: '/nonexistent',
     LOG_LEVEL: 'silent',
     AUTH_RATE_LIMIT: '1000',
+    ...extraEnv,
   });
   const sql = createDb(TEST_DB, { max: 5 });
   await sql`drop schema public cascade`;

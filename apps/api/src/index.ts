@@ -1,4 +1,5 @@
 import { buildApp } from './app';
+import { ensureBootstrapAccount } from './bootstrap';
 import { loadConfig } from './config';
 import { createDb, migrate } from './db';
 
@@ -17,6 +18,7 @@ for (let attempt = 1; ; attempt++) {
     await new Promise((r) => setTimeout(r, 2000));
   }
 }
+await ensureBootstrapAccount(sql, config, (msg) => app.log.warn(msg));
 await realtime.start();
 await app.listen({ port: config.port, host: config.host });
 // Видно при любом уровне логов: по этой строке понятно, что можно открывать браузер.

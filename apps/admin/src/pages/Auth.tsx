@@ -52,7 +52,7 @@ function AuthFrame({ title, children }: { title: string; children: React.ReactNo
 
 export function LoginPage() {
   const t = useT();
-  const { refresh } = useSession();
+  const { refresh, config } = useSession();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState('');
@@ -94,9 +94,11 @@ export function LoginPage() {
       <Button className="btn-block" disabled={busy || !email || !password} onClick={() => void submit()}>
         {t('signIn')}
       </Button>
-      <p className="auth-alt">
-        {t('noAccount')} <Link to="/register">{t('register')}</Link>
-      </p>
+      {config?.registrationOpen === false ? null : (
+        <p className="auth-alt">
+          {t('noAccount')} <Link to="/register">{t('register')}</Link>
+        </p>
+      )}
     </AuthFrame>
   );
 }
@@ -145,6 +147,16 @@ export function RegisterPage() {
   };
 
   const types: BusinessType[] = ['coffee', 'cafe', 'restaurant', 'bar', 'hookah'];
+  if (config?.registrationOpen === false) {
+    return (
+      <AuthFrame title={t('registerTitle')}>
+        <p className="notice">{t('registrationClosed')}</p>
+        <p className="auth-alt">
+          {t('haveAccount')} <Link to="/login">{t('signIn')}</Link>
+        </p>
+      </AuthFrame>
+    );
+  }
   return (
     <AuthFrame title={t('registerTitle')}>
       <div className="grid-2">

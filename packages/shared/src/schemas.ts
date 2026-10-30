@@ -36,6 +36,11 @@ export const loginInput = z.object({
   password: z.string().min(1).max(200),
 });
 
+export const passwordChangeInput = z.object({
+  currentPassword: z.string().min(1).max(200),
+  newPassword: passwordSchema,
+});
+
 export const orgUpdateInput = z.object({
   name: name(120).optional(),
   locale: localeSchema.optional(),

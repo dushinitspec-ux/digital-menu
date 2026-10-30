@@ -464,6 +464,14 @@ export class MockApi {
       db.sessionUserId = user.id;
       return { userId: user.id };
     }
+    if (method === 'POST' && path === '/auth/password') {
+      const user = this.user();
+      const input = body as { currentPassword?: string; newPassword?: string };
+      if (input.currentPassword !== user.password) throw new HttpError(400, 'wrong_password');
+      if (!input.newPassword || input.newPassword.length < 8) throw new HttpError(400, 'validation');
+      user.password = input.newPassword;
+      return { ok: true };
+    }
     if (method === 'POST' && path === '/auth/logout') {
       db.sessionUserId = null;
       return { ok: true };
@@ -474,7 +482,7 @@ export class MockApi {
         .filter((x) => x.userId === user.id)
         .map((x) => {
           const o = db.orgs.find((oo) => oo.id === x.orgId)!;
-          return { id: o.id, name: o.name, region: o.region, currency: o.currency, locale: o.locale, businessType: o.businessType, role: x.role };
+          return { id: o.id, name: o.name, region: o.region, currency: o.currency, locale: o.locale, businessType: o.businessType, plan: 'standard', role: x.role };
         });
       return { user: { id: user.id, email: user.email, name: user.name, locale: user.locale }, orgs };
     }

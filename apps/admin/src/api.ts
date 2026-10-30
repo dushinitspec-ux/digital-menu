@@ -57,6 +57,8 @@ export interface PublicConfig {
   timezone: string;
   /** Демо-режим в браузере: экран показывается в окне на странице, а не по адресу плеера. */
   demo?: boolean;
+  /** false — новые аккаунты создаёт владелец сервиса (закрытый пилот). */
+  registrationOpen?: boolean;
 }
 
 export interface OrgSummary {
@@ -66,6 +68,7 @@ export interface OrgSummary {
   currency: Currency;
   locale: Locale;
   businessType: BusinessType;
+  plan?: 'standard' | 'complimentary';
   role: Role;
 }
 
