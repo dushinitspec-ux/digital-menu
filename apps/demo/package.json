@@ -1,0 +1,19 @@
+{
+  "name": "@dm/demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Демо в одном HTML-файле: рендерер ТВ-экрана и панель правки без сервера",
+  "scripts": {
+    "build": "vite build && node build-html.mjs",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@dm/renderer": "workspace:*",
+    "@dm/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5"
+  }
+}

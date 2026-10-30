@@ -1,0 +1,40 @@
+# Полный сервис на своём компьютере одной командой (нужен только Docker Desktop):
+#   docker compose -f docker-compose.local.yml up --build
+# Панель:  http://localhost:3000/admin/
+# Плеер:   http://localhost:3000/player/   (на ТВ в той же Wi-Fi сети: http://<IP ноутбука>:3000/player/)
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dm
+      POSTGRES_PASSWORD: dm
+      POSTGRES_DB: digital_menu
+    volumes:
+      - pgdata-local:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U dm']
+      interval: 3s
+      retries: 20
+
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://dm:dm@db:5432/digital_menu
+      REGION: ru
+      PUBLIC_URL: http://localhost:3000
+      BRAND_NAME: Digital Menu
+      LOG_LEVEL: warn
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - media-local:/data/media
+
+volumes:
+  pgdata-local:
+  media-local:
