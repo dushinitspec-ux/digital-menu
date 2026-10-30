@@ -1,0 +1,63 @@
+/* Размеры — с экранов Understone Merkez (1600×900), увеличены до 1920×1080. */
+html, body { margin: 0; background: #000; }
+.screen { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+.screen * { box-sizing: border-box; }
+h1, h2 { margin: 0; font-weight: 400; }
+.amp { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 500; font-size: .86em; margin: 0 .05em; letter-spacing: 0; }
+.tl { font-family: Oswald, 'Bebas Neue', sans-serif; font-weight: 500; font-size: .8em; margin-left: 1px; }
+.cr { position: absolute; overflow: visible; pointer-events: none; }
+.dot { position: absolute; border-radius: 50%; background: #fff; }
+.dot.soft { filter: blur(2px); }
+.dot.ice { background: #b9d6f1; opacity: .8; }
+
+/* ---------- Экраны напитков: белый фон, синяя панель по центру ---------- */
+.drinks { background: radial-gradient(ellipse at 30% 0%, #ffffff 0%, #f7fafd 55%, #eef4fa 100%); color: #0a0b48; font-family: 'Bebas Neue', Oswald, sans-serif; }
+.drinks .deco { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.drinks .col { position: absolute; top: 52px; width: 415px; z-index: 2; }
+.drinks .col.left { left: 55px; }
+.drinks .col.right { left: 1471px; }
+.blk + .blk { margin-top: 30px; }
+.blk h2 { font-size: 62px; line-height: 1; letter-spacing: .055em; white-space: nowrap; }
+.blk.r h2 { text-align: right; }
+.blk .rule { height: 2px; width: 362px; margin: 12px 0 18px; background: #0a0b48; opacity: .55; }
+.blk.r .rule { margin-left: auto; }
+.hflake { width: 34px; height: 34px; margin-left: 14px; position: relative; top: 2px; }
+.row { display: flex; justify-content: space-between; align-items: baseline; font-size: 32px; line-height: 40px; letter-spacing: .075em; }
+.row .pr { letter-spacing: .04em; }
+.div { height: 2px; width: 362px; margin: 14px 0 16px; background: #0a0b48; opacity: .55; }
+.blk.r .div { width: 100%; }
+.panel { position: absolute; left: 626px; top: 0; width: 704px; height: 1080px; background: #04317a; color: #fff; z-index: 1; overflow: hidden; text-align: center; padding-top: 52px; }
+.panel h2 { position: relative; font-size: 62px; line-height: 1; letter-spacing: .055em; }
+.panel .rule { position: relative; height: 2px; width: 362px; margin: 12px auto 18px; background: #fff; opacity: .6; }
+.panel .grp { position: relative; width: 404px; margin: 0 auto; text-align: left; }
+.panel .row { color: #fff; }
+.drift { position: absolute; left: -20px; right: -20px; bottom: -30px; height: 110px; border-radius: 50% 50% 0 0 / 70% 70% 0 0; background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.22), rgba(255,255,255,.08) 70%); }
+.tiles { position: relative; display: flex; flex-wrap: wrap; justify-content: center; column-gap: 20px; margin-top: 24px; }
+.tile { width: 270px; margin: 0 0 14px; display: flex; flex-direction: column; align-items: center; }
+.tile img { height: 206px; max-width: 220px; object-fit: contain; filter: drop-shadow(0 16px 18px rgba(0,0,0,.35)); }
+.tile figcaption { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
+.tn { font-size: 26px; letter-spacing: .07em; line-height: 1.05; white-space: nowrap; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,.55); min-width: 150px; text-align: center; }
+.tp { font-size: 34px; letter-spacing: .04em; margin-top: 6px; }
+
+/* ---------- FOOD & CO.: синий, тарелки слева от текста, 2×3 ---------- */
+.food { color: #fff; background: #004775; font-family: Montserrat, sans-serif; }
+.food .tex { position: absolute; inset: 0; background:
+  linear-gradient(118deg, transparent 0 18%, rgba(255,255,255,.035) 18% 30%, transparent 30% 100%),
+  linear-gradient(118deg, transparent 0 52%, rgba(255,255,255,.03) 52% 61%, transparent 61% 100%),
+  linear-gradient(62deg, transparent 0 70%, rgba(255,255,255,.035) 70% 82%, transparent 82% 100%),
+  radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.08), transparent 60%); }
+.food .frost { position: absolute; top: -200px; width: 700px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(220,238,255,.28), rgba(220,238,255,0) 65%); }
+.food .frost.l { left: -260px; } .food .frost.r { right: -260px; }
+.food header { position: absolute; left: 0; right: 0; top: 40px; text-align: center; z-index: 2; }
+.food h1 { font-family: 'Bebas Neue', Oswald, sans-serif; font-size: 112px; line-height: 1; letter-spacing: .1em; }
+.food h1 .amp { font-size: .82em; margin: 0 .12em 0 .02em; }
+.food header .rule { width: 1207px; height: 2px; margin: 14px auto 0; background: rgba(255,255,255,.9); }
+.food .grid { position: absolute; left: 50px; right: 40px; top: 200px; bottom: 30px; display: grid; grid-template-columns: 898px 1fr; grid-template-rows: repeat(3, 1fr); z-index: 2; }
+.food .dish { display: flex; align-items: center; }
+.food .ph { width: 400px; height: 226px; flex: none; display: flex; align-items: center; justify-content: center; margin-right: 26px; }
+.food .ph img { max-width: 100%; max-height: 100%; filter: drop-shadow(0 18px 18px rgba(0,0,0,.28)); }
+.food .tx { width: 470px; }
+.food .nm { font-family: 'Bebas Neue', Oswald, sans-serif; font-size: 52px; line-height: 1; letter-spacing: .02em; }
+.food .ds { font-size: 21px; line-height: 1.42; margin-top: 8px; color: rgba(255,255,255,.93); }
+.food .pr { font-family: 'Bebas Neue', Oswald, sans-serif; font-size: 70px; line-height: 1; margin-top: 14px; letter-spacing: .02em; }
+.food .snowbank { position: absolute; left: 0; bottom: 0; width: 100%; height: 100px; z-index: 1; }
