@@ -1,0 +1,7 @@
+# HTTPS-сертификат выпускается автоматически. SSE не буферизуется: flush_interval -1.
+{$APP_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy app:3000 {
+		flush_interval -1
+	}
+}
