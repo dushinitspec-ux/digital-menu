@@ -12,6 +12,7 @@ function formatterFor(timeZone: string): Intl.DateTimeFormat {
       weekday: 'short',
       hour: '2-digit',
       minute: '2-digit',
+      hour12: false,
       hourCycle: 'h23',
     });
     formatters.set(timeZone, f);
@@ -21,12 +22,24 @@ function formatterFor(timeZone: string): Intl.DateTimeFormat {
 
 /** День недели (1 — пн … 7 — вс) и минуты от полуночи в часовом поясе точки. */
 export function localTimeParts(date: Date, timeZone: string): { weekday: number; minutes: number } {
-  const parts = formatterFor(timeZone).formatToParts(date);
-  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
-  const weekday = WEEKDAYS[get('weekday')] ?? 1;
-  const hour = Number(get('hour')) % 24;
-  const minute = Number(get('minute'));
-  return { weekday, minutes: hour * 60 + minute };
+  const formatter = formatterFor(timeZone);
+  let weekdayName: string;
+  let hour: number;
+  let minute: number;
+  if (typeof formatter.formatToParts === 'function') {
+    const parts = formatter.formatToParts(date);
+    const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
+    weekdayName = get('weekday');
+    hour = Number(get('hour'));
+    minute = Number(get('minute'));
+  } else {
+    // Старые WebView ТВ-приставок (Chromium < 57): разбираем строку вида «Mon, 08:30».
+    const m = /([A-Za-z]{3})\D+(\d{1,2}):(\d{2})/.exec(formatter.format(date)) ?? [];
+    weekdayName = m[1] ?? 'Mon';
+    hour = Number(m[2] ?? 0);
+    minute = Number(m[3] ?? 0);
+  }
+  return { weekday: WEEKDAYS[weekdayName] ?? 1, minutes: (hour % 24) * 60 + minute };
 }
 
 export function isValidTimeZone(timeZone: string): boolean {

@@ -1,0 +1,839 @@
+/*
+ * Шаблоны экрана. Сцена рисуется в 1920×1080 (или 1080×1920) и масштабируется под ТВ.
+ * Только flexbox и transform/opacity-анимации: это работает и в старых WebView дешёвых приставок
+ * (Chromium 53+), где нет CSS Grid и gap во flex.
+ */
+
+.dm-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+.dm-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+
+.dm-scene {
+  --pad-x: 96px;
+  --pad-y: 72px;
+  --col-gap: 80px;
+  --cat-gap: 40px;
+  --cell-w: 108px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: var(--pad-y) var(--pad-x);
+  color: var(--fg);
+  background: var(--bg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+.dm-scene.is-shown {
+  opacity: 1;
+}
+.dm-scene.dm-quiet {
+  transition-duration: 0.3s;
+}
+.dm-scene.dm-leave {
+  opacity: 0;
+}
+.dm-scene * {
+  box-sizing: border-box;
+}
+
+/* --- Фон --- */
+
+.dm-bg,
+.dm-bg-dim,
+.dm-deco {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+.dm-bg img,
+.dm-bg video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.dm-bg-img {
+  animation: dm-kenburns 48s ease-in-out infinite alternate;
+}
+.dm-bg-dim {
+  background: #000;
+}
+
+.dm-head,
+.dm-body,
+.dm-foot {
+  position: relative;
+  z-index: 1;
+}
+.dm-body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.dm-measure {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+}
+
+/* --- Страницы и колонки --- */
+
+.dm-page {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  opacity: 0;
+  -webkit-transform: translateY(16px);
+  transform: translateY(16px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.dm-page.is-active {
+  opacity: 1;
+  -webkit-transform: none;
+  transform: none;
+}
+.dm-col {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+.dm-col + .dm-col {
+  margin-left: var(--col-gap);
+}
+.dm-cat {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--cat-gap);
+}
+
+/* --- Категория --- */
+
+.dm-cat-head {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+.dm-cat-name {
+  flex: 1 1 auto;
+}
+.dm-cat-sub {
+  display: block;
+  font-size: 0.5em;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+.dm-cat-labels {
+  display: flex;
+  flex-direction: row;
+  flex: 0 0 auto;
+}
+.dm-cell {
+  display: inline-block;
+  width: var(--cell-w);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* --- Позиция --- */
+
+.dm-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.dm-item-img {
+  flex: 0 0 auto;
+  object-fit: cover;
+}
+.dm-item-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.dm-item-row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+.dm-item-name {
+  flex: 0 1 auto;
+}
+.dm-leader {
+  flex: 1 1 auto;
+  min-width: 24px;
+}
+.dm-item-price,
+.dm-item-prices {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.dm-item-prices {
+  display: flex;
+  flex-direction: row;
+}
+.dm-variant + .dm-variant {
+  margin-left: 22px;
+}
+.dm-variant-label {
+  font-size: 0.6em;
+  opacity: 0.6;
+  margin-right: 6px;
+  letter-spacing: 0.06em;
+}
+.dm-cur {
+  font-size: 0.62em;
+  opacity: 0.7;
+  margin-left: 4px;
+}
+.dm-cur:first-child {
+  margin-left: 0;
+  margin-right: 3px;
+}
+.dm-badge {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 12px;
+  white-space: nowrap;
+  position: relative;
+  top: -3px;
+}
+.dm-soldout {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 6px;
+}
+.dm-item.is-soldout .dm-item-name,
+.dm-item.is-soldout .dm-item-price,
+.dm-item.is-soldout .dm-item-prices,
+.dm-item.is-soldout .dm-item-img {
+  opacity: 0.38;
+}
+.dm-item.is-soldout .dm-item-name {
+  text-decoration: line-through;
+}
+
+/* Изменилась цена — короткая подсветка, чтобы гость заметил. */
+.dm-item.is-flash .dm-item-price,
+.dm-item.is-flash .dm-item-prices {
+  animation: dm-flash 2.6s ease-out;
+}
+
+/* Появление сцены: позиции выплывают по очереди. */
+.dm-enter .dm-item,
+.dm-enter .dm-cat-head {
+  animation: dm-rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+.dm-enter .dm-head {
+  animation: dm-fade-down 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.dm-foot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 28px;
+}
+.dm-note {
+  font-size: 18px;
+  opacity: 0.6;
+}
+.dm-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: 10px;
+  background: currentColor;
+  opacity: 0.25;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.dm-dot.is-active {
+  opacity: 0.9;
+  -webkit-transform: scale(1.25);
+  transform: scale(1.25);
+}
+.dm-empty {
+  position: absolute;
+  left: 0;
+  top: 40%;
+  width: 100%;
+  text-align: center;
+  font-size: 40px;
+  opacity: 0.6;
+}
+
+/* ===================== Noir: тёмный, антиква, золото ===================== */
+
+.dm-tpl-noir {
+  --bg: #0d0c0a;
+  --fg: #efe7d8;
+  --muted: #a39a8a;
+  --accent: #c9a96a;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Manrope', Arial, sans-serif;
+  --col-gap: 88px;
+  --cat-gap: 44px;
+}
+.dm-tpl-noir .dm-deco {
+  background: radial-gradient(ellipse at 18% -10%, rgba(201, 169, 106, 0.16) 0%, rgba(201, 169, 106, 0) 55%),
+    radial-gradient(ellipse at 110% 110%, rgba(120, 92, 52, 0.22) 0%, rgba(120, 92, 52, 0) 50%);
+}
+.dm-tpl-noir .dm-head {
+  text-align: center;
+  margin-bottom: 46px;
+}
+.dm-tpl-noir .dm-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 104px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.dm-tpl-noir .dm-rule {
+  position: relative;
+  width: 320px;
+  height: 1px;
+  margin: 26px auto 0;
+  background: linear-gradient(90deg, rgba(201, 169, 106, 0), var(--accent), rgba(201, 169, 106, 0));
+}
+.dm-tpl-noir .dm-rule::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -5px;
+  width: 9px;
+  height: 9px;
+  margin-left: -5px;
+  border: 1px solid var(--accent);
+  background: var(--bg);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.dm-tpl-noir .dm-subtitle {
+  margin-top: 26px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.dm-tpl-noir .dm-cat-head {
+  padding-bottom: 14px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid rgba(201, 169, 106, 0.35);
+}
+.dm-tpl-noir .dm-cat-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 46px;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+}
+.dm-tpl-noir .dm-cat-labels {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--muted);
+}
+.dm-tpl-noir .dm-item {
+  margin-bottom: 20px;
+}
+.dm-tpl-noir .dm-item-img {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  margin-right: 22px;
+  border: 1px solid rgba(201, 169, 106, 0.4);
+}
+.dm-tpl-noir .dm-item-name {
+  font-size: 27px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.dm-tpl-noir .dm-leader {
+  margin: 0 14px;
+  border-bottom: 2px dotted rgba(239, 231, 216, 0.22);
+  position: relative;
+  top: -7px;
+}
+.dm-tpl-noir .dm-item-price,
+.dm-tpl-noir .dm-item-prices {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1;
+}
+.dm-tpl-noir .dm-item-sub {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 23px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.dm-tpl-noir .dm-item-desc {
+  font-size: 19px;
+  line-height: 1.35;
+  color: var(--muted);
+  margin-top: 5px;
+}
+.dm-tpl-noir .dm-badge {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 4px 9px 3px;
+  border-radius: 2px;
+}
+.dm-tpl-noir .dm-foot {
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+/* ===================== Crema: тёплый светлый, кофейня ===================== */
+
+.dm-tpl-crema {
+  --bg: #f4ede3;
+  --fg: #2b1d14;
+  --muted: #8a7464;
+  --accent: #b4552d;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Manrope', Arial, sans-serif;
+  --pad-x: 92px;
+  --col-gap: 76px;
+  --cat-gap: 38px;
+  --cell-w: 92px;
+}
+.dm-tpl-crema .dm-deco {
+  background: radial-gradient(circle at 92% 6%, rgba(180, 85, 45, 0.14) 0%, rgba(180, 85, 45, 0) 34%),
+    radial-gradient(circle at 4% 104%, rgba(110, 72, 40, 0.12) 0%, rgba(110, 72, 40, 0) 40%);
+}
+.dm-tpl-crema .dm-deco::after {
+  content: '';
+  position: absolute;
+  right: -180px;
+  top: -220px;
+  width: 640px;
+  height: 640px;
+  border-radius: 50%;
+  border: 1px solid rgba(180, 85, 45, 0.18);
+  animation: dm-float 18s ease-in-out infinite alternate;
+}
+.dm-tpl-crema .dm-bg-dim {
+  background: #f4ede3;
+}
+.dm-tpl-crema .dm-head {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  margin-bottom: 48px;
+}
+.dm-tpl-crema .dm-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 92px;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+.dm-tpl-crema .dm-rule {
+  flex: 1 1 auto;
+  height: 2px;
+  margin: 0 36px 18px;
+  background: var(--fg);
+  opacity: 0.12;
+}
+.dm-tpl-crema .dm-subtitle {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 30px;
+  color: var(--muted);
+  padding-bottom: 8px;
+}
+.dm-tpl-crema .dm-cat-head {
+  margin-bottom: 14px;
+}
+.dm-tpl-crema .dm-cat-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 42px;
+  line-height: 1.1;
+}
+.dm-tpl-crema .dm-cat-name::before {
+  content: '';
+  display: inline-block;
+  width: 34px;
+  height: 3px;
+  margin-right: 16px;
+  vertical-align: middle;
+  background: var(--accent);
+  position: relative;
+  top: -4px;
+}
+.dm-tpl-crema .dm-cat-labels {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  padding-bottom: 6px;
+}
+.dm-tpl-crema .dm-item {
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(43, 29, 20, 0.1);
+}
+.dm-tpl-crema .dm-item-img {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+.dm-tpl-crema .dm-item-name {
+  font-size: 27px;
+  font-weight: 600;
+}
+.dm-tpl-crema .dm-item-price,
+.dm-tpl-crema .dm-item-prices {
+  font-size: 28px;
+  font-weight: 800;
+}
+.dm-tpl-crema .dm-item-sub {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.dm-tpl-crema .dm-item-desc {
+  font-size: 19px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.35;
+}
+.dm-tpl-crema .dm-badge {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--accent);
+  padding: 5px 11px 4px;
+  border-radius: 999px;
+}
+.dm-tpl-crema .dm-badge--vegan {
+  background: #5d7a4a;
+}
+.dm-tpl-crema .dm-badge--new {
+  background: var(--fg);
+}
+.dm-tpl-crema .dm-foot {
+  color: var(--muted);
+}
+
+/* ===================== Neon: гротеск, видео, бар ===================== */
+
+.dm-tpl-neon {
+  --bg: #07060c;
+  --fg: #f5f3ff;
+  --muted: #a7a3c2;
+  --accent: #7cf3d0;
+  --font-display: 'Unbounded', 'Arial Black', sans-serif;
+  --font-body: 'Manrope', Arial, sans-serif;
+  --pad-x: 84px;
+  --pad-y: 64px;
+  --col-gap: 48px;
+  --cat-gap: 32px;
+  --cell-w: 112px;
+}
+.dm-tpl-neon .dm-deco {
+  overflow: hidden;
+}
+.dm-tpl-neon .dm-deco::before,
+.dm-tpl-neon .dm-deco::after {
+  content: '';
+  position: absolute;
+  width: 1100px;
+  height: 1100px;
+  border-radius: 50%;
+}
+.dm-tpl-neon .dm-deco::before {
+  left: -380px;
+  top: -520px;
+  background: radial-gradient(circle, rgba(124, 243, 208, 0.22) 0%, rgba(124, 243, 208, 0) 62%);
+  animation: dm-drift-a 26s ease-in-out infinite alternate;
+}
+.dm-tpl-neon .dm-deco::after {
+  right: -420px;
+  bottom: -560px;
+  background: radial-gradient(circle, rgba(167, 112, 255, 0.26) 0%, rgba(167, 112, 255, 0) 62%);
+  animation: dm-drift-b 32s ease-in-out infinite alternate;
+}
+.dm-tpl-neon .dm-head {
+  margin-bottom: 40px;
+}
+.dm-tpl-neon .dm-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 112px;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #ffffff 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dm-tpl-neon .dm-rule {
+  width: 120px;
+  height: 6px;
+  margin: 26px 0 0;
+  border-radius: 3px;
+  background: var(--accent);
+}
+.dm-tpl-neon .dm-subtitle {
+  margin-top: 22px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.dm-tpl-neon .dm-cat {
+  padding: 30px 34px 14px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+.dm-tpl-neon .dm-cat-head {
+  margin-bottom: 20px;
+}
+.dm-tpl-neon .dm-cat-name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 30px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.dm-tpl-neon .dm-cat-labels {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--muted);
+}
+.dm-tpl-neon .dm-item {
+  margin-bottom: 18px;
+}
+.dm-tpl-neon .dm-item-img {
+  width: 88px;
+  height: 88px;
+  border-radius: 20px;
+  margin-right: 22px;
+}
+.dm-tpl-neon .dm-item-name {
+  font-size: 27px;
+  font-weight: 600;
+}
+.dm-tpl-neon .dm-item-price,
+.dm-tpl-neon .dm-item-prices {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 28px;
+}
+.dm-tpl-neon .dm-item-sub,
+.dm-tpl-neon .dm-item-desc {
+  font-size: 19px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.35;
+}
+.dm-tpl-neon .dm-badge {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  background: rgba(124, 243, 208, 0.14);
+  padding: 6px 10px 5px;
+  border-radius: 8px;
+}
+.dm-tpl-neon .dm-badge--spicy {
+  color: #ff8a6b;
+  background: rgba(255, 138, 107, 0.14);
+}
+.dm-tpl-neon .dm-foot {
+  color: var(--muted);
+}
+
+/* ===================== Перечень табака (15-ФЗ) ===================== */
+/* Одинаковый размер букв, чёрное на белом, без изображений — поверх любого шаблона. */
+
+.dm-cat.dm-cat--tobacco {
+  background: #fff;
+  border: 0;
+  border-radius: 0;
+  padding: 26px 30px 12px;
+}
+.dm-cat--tobacco *,
+.dm-cat--tobacco .dm-cat-name,
+.dm-cat--tobacco .dm-item-name,
+.dm-cat--tobacco .dm-item-price,
+.dm-cat--tobacco .dm-item-prices,
+.dm-cat--tobacco .dm-cat-labels {
+  color: #000;
+  -webkit-text-fill-color: #000;
+  font-family: Arial, 'Manrope', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.3;
+  opacity: 1;
+  animation: none;
+}
+.dm-cat--tobacco .dm-cat-head {
+  border: 0;
+  padding: 0;
+  margin-bottom: 14px;
+}
+.dm-cat--tobacco .dm-cat-name::before {
+  display: none;
+}
+.dm-cat--tobacco .dm-item {
+  border: 0;
+  padding: 0;
+  margin-bottom: 12px;
+}
+.dm-cat--tobacco .dm-leader {
+  border: 0;
+}
+.dm-cat--tobacco .dm-cur {
+  margin-left: 0;
+}
+
+/* ===================== Вертикальный экран ===================== */
+
+.dm-portrait {
+  --pad-x: 72px;
+  --pad-y: 80px;
+}
+.dm-portrait .dm-title {
+  font-size: 88px;
+}
+.dm-portrait.dm-tpl-crema .dm-head {
+  display: block;
+}
+.dm-portrait.dm-tpl-crema .dm-rule {
+  margin: 22px 0;
+  width: 120px;
+}
+
+/* ===================== Анимации ===================== */
+
+@keyframes dm-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes dm-fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes dm-flash {
+  0% {
+    transform: scale(1);
+    color: var(--accent);
+  }
+  12% {
+    transform: scale(1.14);
+    color: var(--accent);
+  }
+  60% {
+    transform: scale(1);
+    color: var(--accent);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes dm-kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08) translate(-1%, -1%);
+  }
+}
+@keyframes dm-float {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-40px, 30px);
+  }
+}
+@keyframes dm-drift-a {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(220px, 160px);
+  }
+}
+@keyframes dm-drift-b {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-200px, -140px);
+  }
+}

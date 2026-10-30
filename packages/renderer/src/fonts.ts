@@ -1,0 +1,35 @@
+// Шрифты лежат в сборке, а не на Google Fonts: экран работает офлайн, а в RU-контуре
+// не уходят запросы к иностранным сервисам. unicode-range подгружает только нужные наборы.
+import '@fontsource/manrope/latin-400.css';
+import '@fontsource/manrope/latin-ext-400.css';
+import '@fontsource/manrope/cyrillic-400.css';
+import '@fontsource/manrope/latin-600.css';
+import '@fontsource/manrope/latin-ext-600.css';
+import '@fontsource/manrope/cyrillic-600.css';
+import '@fontsource/manrope/latin-800.css';
+import '@fontsource/manrope/latin-ext-800.css';
+import '@fontsource/manrope/cyrillic-800.css';
+import '@fontsource/cormorant-garamond/latin-500.css';
+import '@fontsource/cormorant-garamond/latin-ext-500.css';
+import '@fontsource/cormorant-garamond/cyrillic-500.css';
+import '@fontsource/cormorant-garamond/latin-500-italic.css';
+import '@fontsource/cormorant-garamond/latin-ext-500-italic.css';
+import '@fontsource/cormorant-garamond/cyrillic-500-italic.css';
+import '@fontsource/cormorant-garamond/latin-600.css';
+import '@fontsource/cormorant-garamond/latin-ext-600.css';
+import '@fontsource/cormorant-garamond/cyrillic-600.css';
+import '@fontsource/playfair-display/latin-500.css';
+import '@fontsource/playfair-display/latin-ext-500.css';
+import '@fontsource/playfair-display/cyrillic-500.css';
+import '@fontsource/playfair-display/latin-500-italic.css';
+import '@fontsource/playfair-display/latin-ext-500-italic.css';
+import '@fontsource/playfair-display/cyrillic-500-italic.css';
+import '@fontsource/playfair-display/latin-700.css';
+import '@fontsource/playfair-display/latin-ext-700.css';
+import '@fontsource/playfair-display/cyrillic-700.css';
+import '@fontsource/unbounded/latin-500.css';
+import '@fontsource/unbounded/latin-ext-500.css';
+import '@fontsource/unbounded/cyrillic-500.css';
+import '@fontsource/unbounded/latin-800.css';
+import '@fontsource/unbounded/latin-ext-800.css';
+import '@fontsource/unbounded/cyrillic-800.css';
