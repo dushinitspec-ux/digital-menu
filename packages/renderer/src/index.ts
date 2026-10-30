@@ -72,6 +72,16 @@ function fontsReady(): Promise<unknown> {
   return fonts ? Promise.race([fonts.ready, new Promise((r) => setTimeout(r, 2500))]) : Promise.resolve();
 }
 
+/**
+ * Колонок по умолчанию. У снежных шаблонов фото крупные, и меню с фото на горизонтальном экране
+ * читается лучше в две колонки, а на вертикальном шаблон и так даёт одну.
+ */
+function autoColumns(scene: SceneView, orientation: Orientation): number {
+  const base = DEFAULT_COLUMNS[scene.template][orientation];
+  const photos = scene.settings.showImages && scene.categories.some((c) => c.items.some((i) => i.image));
+  return photos && SNOW_TEMPLATES.includes(scene.template) ? Math.min(base, 2) : base;
+}
+
 /** Меньше стольких строк категория в колонке не разрывается. */
 const MIN_SPLIT = 3;
 
@@ -387,7 +397,7 @@ export function createRenderer(container: HTMLElement, options: RendererOptions 
     el.style.visibility = 'hidden';
     stage.appendChild(el);
 
-    const columns = Math.max(1, scene.settings.columns ?? DEFAULT_COLUMNS[scene.template][orientation]);
+    const columns = Math.max(1, scene.settings.columns ?? autoColumns(scene, orientation));
     const gap = px(getComputedStyle(el).getPropertyValue('--col-gap')) || 64;
     const colWidth = Math.floor((body.clientWidth - gap * (columns - 1)) / columns);
     const pages = paginate(scene, ctx, body, columns, colWidth);

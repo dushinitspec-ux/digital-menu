@@ -1106,8 +1106,7 @@
         "soldOutMode": "hide",
         "footerNote": "Understone Coffee",
         "title": "Kahvaltı",
-        "subtitle": "Food & Co.",
-        "columns": 2
+        "subtitle": "Food & Co."
       }
     },
     {
@@ -1124,8 +1123,7 @@
         "soldOutMode": "hide",
         "footerNote": "Understone Coffee",
         "title": "Food & Co.",
-        "subtitle": "Tost · Sandviç · Burger · Ana yemek",
-        "columns": 2
+        "subtitle": "Tost · Sandviç · Burger · Ana yemek"
       }
     }
   ],

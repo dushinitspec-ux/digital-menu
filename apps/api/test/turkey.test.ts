@@ -148,6 +148,9 @@ describe('Turkey', () => {
     });
     const result = await importMenu(env.sql, env.storage, updated, { region: 'eu', owner: OWNER, replace: true });
     expect(result).toMatchObject({ created: false, locations: 0, items: 1, scenes: 2, screensUpdated: 1 });
+    // Фото прошлого импорта больше не нужно — его нет ни в медиатеке, ни в хранилище.
+    const [media] = await env.sql<{ count: number }[]>`select count(*)::int as count from media where org_id = ${result.orgId}`;
+    expect(media!.count).toBe(0);
 
     const [screen] = await env.sql<{ schedule: { defaultSceneId: string } }[]>`
       select schedule from screens where org_id = ${result.orgId}`;

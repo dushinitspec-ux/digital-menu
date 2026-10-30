@@ -37,6 +37,9 @@ export interface ImportResult {
 
 export class ImportError extends Error {}
 
+/** Так помечены в медиатеке фото, загруженные импортом: «menu:photos/latte.webp». */
+const MENU_MEDIA_PREFIX = 'menu:';
+
 export async function importMenu(sql: Db, storage: Storage, menu: MenuFile, opts: ImportOptions): Promise<ImportResult> {
   // Данные клиента живут в контуре его страны — так же, как при регистрации через панель.
   if (regionForCountry(menu.org.country) !== opts.region) {
@@ -44,8 +47,9 @@ export async function importMenu(sql: Db, storage: Storage, menu: MenuFile, opts
   }
   const email = opts.owner.email.trim().toLowerCase();
   const uploaded: string[] = [];
+  const removeAfterCommit: string[] = [];
   try {
-    return await sql.begin(async (tx) => {
+    const result = await sql.begin(async (tx) => {
       let [user] = await tx<{ id: string }[]>`select id from users where email = ${email}`;
       if (!user) {
         if (!opts.owner.password || opts.owner.password.length < 8) {
@@ -145,12 +149,24 @@ export async function importMenu(sql: Db, storage: Storage, menu: MenuFile, opts
       }
 
       const screensUpdated = await relinkSchedules(tx, orgId, oldSceneNames, sceneIds);
+
+      // Фото прошлых импортов, которые больше нигде не используются, — удаляем, чтобы повторный импорт
+      // не плодил копии в медиатеке. Загруженное через панель (без префикса menu:) не трогаем.
+      const stale = await tx<{ storageKey: string; thumbKey: string | null }[]>`
+        delete from media m
+        where m.org_id = ${orgId} and m.original_name like ${MENU_MEDIA_PREFIX + '%'}
+          and not exists (select 1 from items i where i.image_id = m.id)
+          and not exists (select 1 from scenes s where s.org_id = m.org_id and s.settings->>'backgroundMediaId' = m.id::text)
+        returning storage_key, thumb_key`;
+      removeAfterCommit.push(...stale.flatMap((m) => (m.thumbKey ? [m.storageKey, m.thumbKey] : [m.storageKey])));
       const details = { source: 'menu-file', replace: Boolean(existing), categories: menu.categories.length, items, scenes: menu.scenes.length };
       await tx`insert into audit_log (org_id, user_id, action, entity, entity_id, details)
                values (${orgId}, ${user!.id}, 'import', 'organization', ${orgId}, ${tx.json(details)})`;
 
       return { orgId, created: !existing, locations, categories: menu.categories.length, items, images, scenes: menu.scenes.length, screensUpdated };
     });
+    await Promise.all(removeAfterCommit.map((key) => storage.remove(key).catch(() => {})));
+    return result;
   } catch (err) {
     // Транзакция откатилась — файлы, загруженные в хранилище по пути, больше никому не нужны.
     await Promise.all(uploaded.map((key) => storage.remove(key).catch(() => {})));
@@ -175,7 +191,7 @@ async function storeImage(tx: Tx, storage: Storage, orgId: string, name: string,
   await tx`
     insert into media (id, org_id, kind, storage_key, thumb_key, mime, size_bytes, width, height, original_name)
     values (${id}, ${orgId}, 'image', ${key}, ${thumbKey}, 'image/webp', ${processed.main.length},
-            ${processed.width}, ${processed.height}, ${name.slice(0, 200)})`;
+            ${processed.width}, ${processed.height}, ${(MENU_MEDIA_PREFIX + name).slice(0, 200)})`;
   return id;
 }
 
