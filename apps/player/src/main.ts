@@ -145,7 +145,13 @@ class Player {
 
   start() {
     // Сначала показываем то, что уже есть в кэше: экран оживает мгновенно и без сети.
-    if (this.manifest) this.tick();
+    if (this.manifest) {
+      this.tick();
+      this.precache(this.manifest.media);
+    }
+    // Ассеты первой загрузки прошли мимо Service Worker — докладываем их в кэш, когда шрифты уже подгрузились.
+    setTimeout(cacheShell, 8000);
+    setInterval(cacheShell, 3_600_000);
     void this.fetchManifest();
     this.connect();
     setInterval(() => void this.fetchManifest(), POLL_MS);
@@ -229,10 +235,7 @@ class Player {
   }
 
   private precache(urls: string[]) {
-    const sw = navigator.serviceWorker?.controller;
-    if (!sw || typeof MessageChannel === 'undefined') return;
-    const channel = new MessageChannel();
-    sw.postMessage({ type: 'precache', urls }, [channel.port2]);
+    postToWorker({ type: 'precache', urls });
   }
 
   private async heartbeat() {
@@ -289,6 +292,27 @@ class Player {
     }
     void this.renderer.show(scene, { currency: m.org.currency, locale: m.org.locale });
   }
+}
+
+/** Сообщение Service Worker'у; ready дожидается активации и на первом запуске. */
+function postToWorker(message: unknown) {
+  if (!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.ready
+    .then((reg) => reg.active?.postMessage(message))
+    .catch(() => {});
+}
+
+function cacheShell() {
+  const prefix = `${location.origin}/player/assets/`;
+  const urls = performance
+    .getEntriesByType('resource')
+    .map((e) => e.name)
+    .filter((u) => u.indexOf(prefix) === 0);
+  const scripts = Array.prototype.slice
+    .call(document.querySelectorAll('script[src], link[rel="stylesheet"]'))
+    .map((el: HTMLScriptElement | HTMLLinkElement) => ('src' in el ? el.src : el.href))
+    .filter((u: string) => u.indexOf(prefix) === 0);
+  postToWorker({ type: 'precache-shell', urls: urls.concat(scripts) });
 }
 
 async function keepAwake() {

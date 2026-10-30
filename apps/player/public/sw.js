@@ -146,8 +146,24 @@ function precache(urls) {
   });
 }
 
+function precacheShell(urls) {
+  return caches.open(SHELL_CACHE).then(function (cache) {
+    return Promise.all(
+      urls.map(function (u) {
+        return cache.match(u).then(function (hit) {
+          return hit || cache.add(u).catch(function () {});
+        });
+      }),
+    );
+  });
+}
+
 self.addEventListener('message', function (event) {
   var data = event.data || {};
+  if (data.type === 'precache-shell') {
+    event.waitUntil(precacheShell(data.urls || []));
+    return;
+  }
   if (data.type !== 'precache') return;
   var port = event.ports && event.ports[0];
   event.waitUntil(

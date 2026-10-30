@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
 import cookie from '@fastify/cookie';
 import multipart from '@fastify/multipart';
@@ -82,6 +82,7 @@ export async function buildApp(config: Config, deps: AppDeps) {
 
   // Медиа из локального хранилища (в продакшене их обычно отдаёт S3 + CDN).
   if (storage.localDir) {
+    mkdirSync(storage.localDir, { recursive: true });
     await app.register(fastifyStatic, {
       root: storage.localDir,
       prefix: '/media/',
